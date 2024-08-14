@@ -1,5 +1,5 @@
 ﻿using Domain.Abstractions;
-using Domain.Rules;
+using Domain.Entities;
 using Infrastructure.DB;
 using Microsoft.EntityFrameworkCore;
 

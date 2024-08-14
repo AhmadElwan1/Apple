@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-
-namespace Domain.Rules;
+﻿namespace Domain.Entities;
 
 public class LeaveRule
 {

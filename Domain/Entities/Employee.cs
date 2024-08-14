@@ -12,4 +12,7 @@ public class Employee
     public int Gender { get; set; }
 
     public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
+
+    public int UnitId { get; set; }
+    public Unit Unit { get; set; }
 }

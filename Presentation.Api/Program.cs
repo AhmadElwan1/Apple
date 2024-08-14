@@ -1,23 +1,29 @@
-using Application;
 using Domain.Abstractions;
 using Infrastructure.DB;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using RulesEngine.Models;
 using Presentation.Routes;
 using System.Text.Json.Serialization;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using RulesEngine.Models;
+using Domain.Validators;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<LeaveDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<ILeaveRequestService, LeaveRequestService>();
 builder.Services.AddScoped<ILeaveRulesRepository, LeaveRulesRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<ITenantRepository, TenantRepository>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateEmployeeDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateTenantDtoValidator>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -33,7 +39,8 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-    });
+    })
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateEmployeeDtoValidator>());
 
 builder.Services.AddSingleton<RulesEngine.RulesEngine>(sp =>
 {

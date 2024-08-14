@@ -1,4 +1,4 @@
-﻿using Domain.Rules;
+﻿using Domain.Entities;
 
 namespace Domain.Abstractions
 {

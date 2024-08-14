@@ -1,6 +1,4 @@
-﻿using Domain.Rules;
-
-namespace Domain.Entities
+﻿namespace Domain.Entities
 {
     public class Country
     {

@@ -1,10 +1,10 @@
-﻿using Domain.Entities;
-using Infrastructure.DB;
+﻿using Domain.Abstractions;
+using Domain.DTOs;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Domain.Rules;
-using Microsoft.EntityFrameworkCore;
 
 namespace Presentation.Routes
 {
@@ -12,52 +12,37 @@ namespace Presentation.Routes
     {
         public static void MapTenantRoutes(this IEndpointRouteBuilder endpoints)
         {
-            endpoints.MapPost("/tenants", async (LeaveDbContext dbContext, string name) =>
+            endpoints.MapPut("/tenants/{tenantId}", async (ITenantRepository tenantRepository, int tenantId, UpdateTenantDto updateTenantDto, IValidator<UpdateTenantDto> validator) =>
             {
-                Tenant tenant = new Tenant { Name = name };
-                dbContext.Tenants.Add(tenant);
-                await dbContext.SaveChangesAsync();
-                return Results.Created($"/tenants/{tenant.Id}", tenant);
+                ValidationResult validationResult = await validator.ValidateAsync(updateTenantDto);
+                if (!validationResult.IsValid)
+                {
+                    return Results.BadRequest(validationResult.Errors);
+                }
+
+                bool updateResult = await tenantRepository.UpdateTenantNameAsync(tenantId, updateTenantDto.Name);
+                if (updateResult)
+                {
+                    return Results.Ok();
+                }
+                return Results.NotFound("Tenant not found.");
             }).WithTags("Tenants");
 
-            endpoints.MapPost("/tenants/{tenantId}/leave-rules", async (LeaveDbContext dbContext, int tenantId, LeaveRule rule) =>
+            endpoints.MapPatch("/tenants/{tenantId}", async (ITenantRepository tenantRepository, int tenantId, UpdateTenantDto updateTenantDto, IValidator<UpdateTenantDto> validator) =>
             {
-                Tenant? tenant = await dbContext.Tenants.FindAsync(tenantId);
-                if (tenant == null)
+                ValidationResult validationResult = await validator.ValidateAsync(updateTenantDto);
+                if (!validationResult.IsValid)
                 {
-                    return Results.NotFound("Tenant not found.");
+                    return Results.BadRequest(validationResult.Errors);
                 }
 
-                Country? country = await dbContext.Countries
-                    .Include(c => c.LeaveRules)
-                    .FirstOrDefaultAsync(c => c.LeaveRules.Any(lr => lr.TenantId == tenantId));
-
-                if (country == null || country.Status != "Active")
+                bool updateResult = await tenantRepository.UpdateTenantNameAsync(tenantId, updateTenantDto.Name);
+                if (updateResult)
                 {
-                    return Results.NotFound("Active country with leave rules not found.");
+                    return Results.Ok();
                 }
-
-                LeaveRule? existingRule = await dbContext.LeaveRules
-                    .FirstOrDefaultAsync(r => r.TenantId == tenantId && r.RuleName == rule.RuleName);
-
-                if (existingRule != null)
-                {
-                    existingRule.Expression = rule.Expression;
-                    existingRule.SuccessEvent = rule.SuccessEvent;
-                    existingRule.FailureEvent = rule.FailureEvent;
-                    existingRule.CountryId = rule.CountryId;
-                }
-                else
-                {
-                    rule.TenantId = tenantId;
-                    dbContext.LeaveRules.Add(rule);
-                }
-
-                await dbContext.SaveChangesAsync();
-                return Results.Ok(rule);
+                return Results.NotFound("Tenant not found.");
             }).WithTags("Tenants");
-
-
         }
     }
 }

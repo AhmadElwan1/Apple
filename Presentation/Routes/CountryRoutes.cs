@@ -1,9 +1,12 @@
-﻿using Domain.Entities;
-using Infrastructure.DB;
+﻿using Domain.Abstractions;
+using Domain.DTOs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
+using Domain.Entities;
+using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Routes
 {
@@ -11,32 +14,53 @@ namespace Presentation.Routes
     {
         public static void MapCountryRoutes(this IEndpointRouteBuilder endpoints)
         {
-            endpoints.MapPost("/countries", async (LeaveDbContext dbContext, string name) =>
+            endpoints.MapPost("/countries", async (ICountryRepository countryRepository, [FromBody] CreateCountryDto createCountryDto, IValidator<CreateCountryDto> validator) =>
             {
-                Country country = new Country { Name = name };
-                dbContext.Countries.Add(country);
-                await dbContext.SaveChangesAsync();
+                ValidationResult result = await validator.ValidateAsync(createCountryDto);
+                if (!result.IsValid)
+                {
+                    return Results.BadRequest(result.Errors);
+                }
 
+                Country country = await countryRepository.CreateCountryAsync(createCountryDto.Name);
                 return Results.Created($"/countries/{country.Id}", country);
             }).WithTags("Country");
 
-            endpoints.MapPatch("/countries/{id}/activate", async (LeaveDbContext dbContext, int id) =>
+            endpoints.MapPost("/countries/{countryId}/rules", async (ICountryRepository countryRepository, int countryId, [FromBody] LeaveRuleDto leaveRuleDto, IValidator<LeaveRuleDto> validator) =>
             {
-                Country? country = await dbContext.Countries
-                    .Include(c => c.LeaveRules)
-                    .FirstOrDefaultAsync(c => c.Id == id);
+                ValidationResult result = await validator.ValidateAsync(leaveRuleDto);
+                if (!result.IsValid)
+                {
+                    return Results.BadRequest(result.Errors);
+                }
 
-                if (country == null)
-                    return Results.NotFound("Country not found.");
+                LeaveRule? rule = await countryRepository.AddLeaveRuleAsync(countryId, leaveRuleDto);
+                return Results.Created($"/countries/{countryId}/rules/{rule.Id}", rule);
+            }).WithTags("Country");
 
-                if (!country.LeaveRules.Any())
-                    return Results.BadRequest("Country must have associated rules before activation.");
+            endpoints.MapPatch("/countries/{id}/activate", async (ICountryRepository countryRepository, int id) =>
+            {
+                bool activated = await countryRepository.ActivateCountryAsync(id);
+                if (!activated)
+                    return Results.NotFound("Country not found or no rules to activate.");
 
-                country.Status = "Active";
-                await dbContext.SaveChangesAsync();
                 return Results.Ok();
             }).WithTags("Country");
 
+            endpoints.MapGet("/countries", async (ICountryRepository countryRepository) =>
+            {
+                IEnumerable<Country> countries = await countryRepository.GetAllCountriesAsync();
+                return Results.Ok(countries);
+            }).WithTags("Country");
+
+            endpoints.MapDelete("/countries/{id}", async (ICountryRepository countryRepository, int id) =>
+            {
+                bool deleted = await countryRepository.DeleteCountryAsync(id);
+                if (!deleted)
+                    return Results.NotFound("Country not found.");
+
+                return Results.NoContent();
+            }).WithTags("Country");
         }
     }
 }
