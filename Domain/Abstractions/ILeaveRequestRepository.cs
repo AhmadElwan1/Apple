@@ -1,5 +1,4 @@
 ﻿using Domain.DTOs;
-using System.Threading.Tasks;
 
 namespace Domain.Abstractions
 {

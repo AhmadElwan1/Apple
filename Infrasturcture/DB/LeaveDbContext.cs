@@ -41,5 +41,6 @@ namespace Infrastructure.DB
                 .HasForeignKey(lr => lr.TenantId)
                 .OnDelete(DeleteBehavior.SetNull);
         }
+
     }
 }

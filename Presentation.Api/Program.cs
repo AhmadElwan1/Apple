@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using RulesEngine.Models;
 using Presentation.Routes;
+using System.Text.Json.Serialization;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,12 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    });
 
 builder.Services.AddSingleton<RulesEngine.RulesEngine>(sp =>
 {
@@ -49,7 +56,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.MapHostRoutes();
+app.MapCountryRoutes();
 app.MapTenantRoutes();
 app.MapEmployeeRoutes();
 

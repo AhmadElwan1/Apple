@@ -32,7 +32,7 @@ namespace Infrastructure.Repositories
 
         public async Task DeleteLeaveRequestAsync(int id)
         {
-            var leaveRequest = await _dbContext.LeaveRequests.FindAsync(id);
+            LeaveRequest? leaveRequest = await _dbContext.LeaveRequests.FindAsync(id);
             if (leaveRequest != null)
             {
                 _dbContext.LeaveRequests.Remove(leaveRequest);
