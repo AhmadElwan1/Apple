@@ -9,5 +9,6 @@ namespace Domain.Abstractions
         Task UpdateLeaveRequestAsync(LeaveRequest leaveRequest);
         Task DeleteLeaveRequestAsync(int id);
         Task SaveChangesAsync();
+        Task<IEnumerable<LeaveRequest>> GetAllLeaveRequestsAsync();
     }
 }

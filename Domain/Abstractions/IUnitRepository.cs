@@ -10,5 +10,7 @@ namespace Domain.Abstractions
         Task<bool> UpdateUnitAsync(int unitId, UpdateUnitDto updateUnitDto);
         Task<bool> DeleteUnitAsync(int unitId);
         Task<IEnumerable<Unit>> GetAllUnitsByTenantIdAsync(int tenantId);
+        Task<IEnumerable<Unit>> GetAllUnitsAsync();
+
     }
 }

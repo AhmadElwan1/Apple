@@ -1,7 +1,6 @@
 ﻿using Domain.Abstractions;
 using Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 using RulesEngine.Models;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;

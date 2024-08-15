@@ -63,5 +63,10 @@ namespace Infrastructure.Repositories
                 .Where(u => u.TenantId == tenantId)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Unit>> GetAllUnitsAsync()
+        {
+            return await _dbContext.Units.ToListAsync();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Domain.Abstractions;
 using Domain.Entities;
 using Infrastructure.DB;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
@@ -43,6 +44,11 @@ namespace Infrastructure.Repositories
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<LeaveRequest>> GetAllLeaveRequestsAsync()
+        {
+            return await _dbContext.LeaveRequests.ToListAsync();
         }
     }
 }

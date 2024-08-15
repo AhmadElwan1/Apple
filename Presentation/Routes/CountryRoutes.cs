@@ -66,6 +66,22 @@ namespace Presentation.Routes
 
                 return Results.NoContent();
             }).WithTags("Country");
+
+            endpoints.MapDelete("/countries/{countryId}/rules/{ruleId}", async (int countryId, int ruleId, ICountryRepository countryRepository) =>
+            {
+                bool deleted = await countryRepository.DeleteLeaveRuleAsync(ruleId);
+                if (deleted)
+                {
+                    return Results.NoContent();
+                }
+                return Results.NotFound("Leave rule not found.");
+            }).WithTags("Country");
+
+            endpoints.MapGet("/rules", async (ILeaveRulesRepository leaveRulesRepository) =>
+            {
+                IEnumerable<LeaveRule> leaveRules = leaveRulesRepository.GetAllRules();
+                return Results.Ok(leaveRules);
+            }).WithTags("LeaveRules");
         }
     }
 }

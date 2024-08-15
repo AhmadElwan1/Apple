@@ -49,5 +49,6 @@ app.MapCountryRoutes();
 app.MapTenantRoutes();
 app.MapEmployeeRoutes();
 app.MapUnitRoutes();
+app.MapLeaveRequestRoutes();
 
 app.Run();
