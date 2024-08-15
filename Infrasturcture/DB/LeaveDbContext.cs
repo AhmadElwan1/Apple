@@ -7,7 +7,7 @@ namespace Infrastructure.DB
     {
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<Unit> Units { get; set; }
-        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Employee> Employees { get; set;}
         public DbSet<Country> Countries { get; set; }
         public DbSet<LeaveRule> LeaveRules { get; set; }
         public DbSet<LeaveRequest> LeaveRequests { get; set; }

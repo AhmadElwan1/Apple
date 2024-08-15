@@ -13,7 +13,6 @@ namespace Presentation.Routes
     {
         public static void MapUnitRoutes(this IEndpointRouteBuilder endpoints)
         {
-            // Create a unit
             endpoints.MapPost("/units", async (IUnitRepository unitRepository, CreateUnitDto createUnitDto, IValidator<CreateUnitDto> validator) =>
             {
                 ValidationResult? validationResult = await validator.ValidateAsync(createUnitDto);
@@ -26,7 +25,6 @@ namespace Presentation.Routes
                 return Results.Created($"/units/{unit.Id}", unit);
             }).WithTags("Units");
 
-            // Update a unit by ID
             endpoints.MapPut("/units/{unitId}", async (IUnitRepository unitRepository, int unitId, UpdateUnitDto updateUnitDto, IValidator<UpdateUnitDto> validator) =>
             {
                 ValidationResult? validationResult = await validator.ValidateAsync(updateUnitDto);
@@ -44,7 +42,6 @@ namespace Presentation.Routes
                 return Results.NotFound("Unit not found.");
             }).WithTags("Units");
 
-            // Partial update of a unit by ID
             endpoints.MapPatch("/units/{unitId}", async (IUnitRepository unitRepository, int unitId, UpdateUnitDto updateUnitDto, IValidator<UpdateUnitDto> validator) =>
             {
                 ValidationResult? validationResult = await validator.ValidateAsync(updateUnitDto);
@@ -62,7 +59,6 @@ namespace Presentation.Routes
                 return Results.NotFound("Unit not found.");
             }).WithTags("Units");
 
-            // Delete a unit by ID
             endpoints.MapDelete("/units/{unitId}", async (IUnitRepository unitRepository, int unitId) =>
             {
                 bool deleted = await unitRepository.DeleteUnitAsync(unitId);
@@ -74,18 +70,27 @@ namespace Presentation.Routes
                 return Results.NotFound("Unit not found.");
             }).WithTags("Units");
 
-            // Get all units
             endpoints.MapGet("/units", async (IUnitRepository unitRepository) =>
             {
                 IEnumerable<Unit> units = await unitRepository.GetAllUnitsAsync();
                 return Results.Ok(units);
             }).WithTags("Units");
 
-            // Get all units by TenantId
             endpoints.MapGet("/units/tenant/{tenantId}", async (IUnitRepository unitRepository, int tenantId) =>
             {
                 IEnumerable<Unit> units = await unitRepository.GetAllUnitsByTenantIdAsync(tenantId);
                 return Results.Ok(units);
+            }).WithTags("Units");
+
+            endpoints.MapGet("/units/{unitId}", async (IUnitRepository unitRepository, int unitId) =>
+            {
+                Unit? unit = await unitRepository.GetUnitByIdAsync(unitId);
+                if (unit != null)
+                {
+                    return Results.Ok(unit);
+                }
+
+                return Results.NotFound("Unit not found.");
             }).WithTags("Units");
         }
     }
