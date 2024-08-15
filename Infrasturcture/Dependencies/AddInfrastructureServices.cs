@@ -25,7 +25,10 @@ namespace Infrastructure.Dependencies
             services.AddScoped<IUnitRepository, UnitRepository>();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b0815ad7cc9299dfe29de151779d08f342a0c371
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
@@ -35,7 +38,10 @@ namespace Infrastructure.Dependencies
                     Version = "v1"
                 });
             });
+<<<<<<< HEAD
 >>>>>>> b0815ad (Error)
+=======
+>>>>>>> b0815ad7cc9299dfe29de151779d08f342a0c371
 
             services.AddSingleton<RulesEngine.RulesEngine>(sp =>
             {

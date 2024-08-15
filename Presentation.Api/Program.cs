@@ -7,7 +7,10 @@ using Domain.Validators.LeaveRuleValidators;
 using Domain.Validators.TenantValidators;
 using Domain.Validators.UnitValidators;
 using Microsoft.OpenApi.Models;
+<<<<<<< HEAD
 using Domain.Validators.CountryValidators;
+=======
+>>>>>>> b0815ad7cc9299dfe29de151779d08f342a0c371
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +25,10 @@ builder.Services.AddControllers()
         fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateUnitDtoValidator)));
         fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(UpdateUnitDtoValidator)));
         fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(LeaveRuleDtoValidator)));
+<<<<<<< HEAD
         fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateCountryDtoValidator)));
+=======
+>>>>>>> b0815ad7cc9299dfe29de151779d08f342a0c371
     });
 
 builder.Services.AddEndpointsApiExplorer();
