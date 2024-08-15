@@ -24,6 +24,18 @@ namespace Infrastructure.Dependencies
             services.AddScoped<ITenantRepository, TenantRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
 
+<<<<<<< HEAD
+=======
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "HR Management System API",
+                    Version = "v1"
+                });
+            });
+>>>>>>> b0815ad (Error)
 
             services.AddSingleton<RulesEngine.RulesEngine>(sp =>
             {

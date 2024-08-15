@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
+<<<<<<< HEAD
+using Domain.Validators.CountryValidators;
+=======
+>>>>>>> b0815ad (Error)
 
 namespace Presentation.Routes
 {
