@@ -1,4 +1,4 @@
-﻿/*using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Infrastructure.DB
@@ -14,4 +14,4 @@ namespace Infrastructure.DB
             return new LeaveDbContext(optionsBuilder.Options);
         }
     }
-}*/
+}
