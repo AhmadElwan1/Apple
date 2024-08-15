@@ -1,5 +1,4 @@
-﻿using Domain.DTOs;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DB
@@ -7,6 +6,7 @@ namespace Infrastructure.DB
     public class LeaveDbContext : DbContext
     {
         public DbSet<Tenant> Tenants { get; set; }
+        public DbSet<Unit> Units { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<LeaveRule> LeaveRules { get; set; }

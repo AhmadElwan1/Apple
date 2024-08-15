@@ -1,5 +1,5 @@
 ﻿using Domain.Abstractions;
-using Domain.DTOs;
+using Domain.Entities;
 using Infrastructure.DB;
 
 namespace Infrastructure.Repositories

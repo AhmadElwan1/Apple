@@ -1,4 +1,4 @@
-﻿using Domain.DTOs;
+﻿using Domain.DTOs.Employee;
 using Domain.Entities;
 
 namespace Domain.Abstractions

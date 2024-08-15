@@ -1,4 +1,4 @@
-﻿using Domain.DTOs;
+﻿using Domain.DTOs.LeaveRule;
 using Domain.Entities;
 
 namespace Domain.Abstractions

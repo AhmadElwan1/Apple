@@ -1,4 +1,4 @@
-﻿using Domain.DTOs;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,4 +15,3 @@ public class LeaveRequestConfiguration : IEntityTypeConfiguration<LeaveRequest>
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
-

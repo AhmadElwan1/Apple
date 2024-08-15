@@ -1,5 +1,7 @@
-﻿using Domain.DTOs;
+﻿using Domain.DTOs.Tenant;
 using FluentValidation;
+
+namespace Domain.Validators.TenantValidators;
 
 public class UpdateTenantDtoValidator : AbstractValidator<UpdateTenantDto>
 {

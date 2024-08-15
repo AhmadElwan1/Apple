@@ -9,7 +9,10 @@ using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
 using FluentValidation;
 using RulesEngine.Models;
-using Domain.Validators;
+using Domain.Validators.EmployeeValidators;
+using Domain.Validators.LeaveRuleValidators;
+using Domain.Validators.TenantValidators;
+using Domain.Validators.UnitValidators;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -21,9 +24,16 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
+builder.Services.AddScoped<IUnitRepository, UnitRepository>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEmployeeDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateEmployeeDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTenantDtoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateTenantDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateUnitDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateUnitDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<LeaveRuleDtoValidator>();
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -45,9 +55,9 @@ builder.Services.AddControllers()
 builder.Services.AddSingleton<RulesEngine.RulesEngine>(sp =>
 {
     IConfiguration configuration = sp.GetRequiredService<IConfiguration>();
-    string rulesFilePath = configuration.GetValue<string>("C:\\Users\\Ahmad-Elwan\\source\\repos\\Apple\\Domain\\Rules\\Rules.json");
+    string rulesFilePath = configuration.GetValue<string>("C:\\Users\\Ahmad-Elwan\\source\\repos\\Apple\\Domain\\Rules\\Rules.json")!;
     string rulesJson = File.ReadAllText(rulesFilePath);
-    Workflow workflow = JsonConvert.DeserializeObject<Workflow>(rulesJson);
+    Workflow workflow = JsonConvert.DeserializeObject<Workflow>(rulesJson)!;
     return new RulesEngine.RulesEngine(new[] { workflow }, null);
 });
 
@@ -66,5 +76,6 @@ if (app.Environment.IsDevelopment())
 app.MapCountryRoutes();
 app.MapTenantRoutes();
 app.MapEmployeeRoutes();
+app.MapUnitRoutes();
 
 app.Run();

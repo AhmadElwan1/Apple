@@ -1,5 +1,5 @@
 ﻿using Domain.Abstractions;
-using Domain.DTOs;
+using Domain.DTOs.LeaveRule;
 using Domain.Entities;
 using Infrastructure.DB;
 using Microsoft.EntityFrameworkCore;

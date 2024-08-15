@@ -1,7 +1,7 @@
-﻿using Domain.DTOs;
+﻿using Domain.DTOs.Employee;
 using FluentValidation;
 
-namespace Domain.Validators
+namespace Domain.Validators.EmployeeValidators
 {
     public class UpdateEmployeeDtoValidator : AbstractValidator<UpdateEmployeeDto>
     {

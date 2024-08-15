@@ -1,5 +1,5 @@
 ﻿using Domain.Abstractions;
-using Domain.DTOs;
+using Domain.DTOs.Employee;
 using Domain.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

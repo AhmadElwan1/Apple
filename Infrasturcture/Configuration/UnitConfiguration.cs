@@ -1,6 +1,4 @@
-﻿
-
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,6 +16,5 @@ public class UnitConfiguration : IEntityTypeConfiguration<Unit>
             .WithMany(t => t.Units)
             .HasForeignKey(e => e.TenantId);
     }
-    
 }
 

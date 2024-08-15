@@ -1,6 +1,4 @@
-﻿using Domain.DTOs;
-
-namespace Domain.Entities;
+﻿namespace Domain.Entities;
 
 public class Employee
 {

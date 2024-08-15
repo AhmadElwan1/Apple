@@ -1,5 +1,4 @@
 ﻿using Domain.Abstractions;
-using Domain.DTOs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -7,6 +6,8 @@ using Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Domain.DTOs.Country;
+using Domain.DTOs.LeaveRule;
 
 namespace Presentation.Routes
 {

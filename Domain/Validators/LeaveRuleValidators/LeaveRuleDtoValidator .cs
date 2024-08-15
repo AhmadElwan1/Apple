@@ -1,7 +1,7 @@
-﻿using Domain.DTOs;
+﻿using Domain.DTOs.LeaveRule;
 using FluentValidation;
 
-namespace Domain.Validators
+namespace Domain.Validators.LeaveRuleValidators
 {
     public class LeaveRuleDtoValidator : AbstractValidator<LeaveRuleDto>
     {

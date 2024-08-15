@@ -1,5 +1,5 @@
 ﻿using Domain.Abstractions;
-using Domain.DTOs;
+using Domain.DTOs.Tenant;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Builder;
