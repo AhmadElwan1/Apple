@@ -1,39 +1,27 @@
-using Domain.Abstractions;
-using Infrastructure.DB;
-using Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
+using Infrastructure.Dependencies;
 using Presentation.Routes;
-using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
-using FluentValidation;
-using RulesEngine.Models;
+using System.Reflection;
 using Domain.Validators.EmployeeValidators;
 using Domain.Validators.LeaveRuleValidators;
 using Domain.Validators.TenantValidators;
 using Domain.Validators.UnitValidators;
+using Microsoft.OpenApi.Models;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<LeaveDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
-builder.Services.AddScoped<ILeaveRulesRepository, LeaveRulesRepository>();
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
-builder.Services.AddScoped<ICountryRepository, CountryRepository>();
-builder.Services.AddScoped<ITenantRepository, TenantRepository>();
-builder.Services.AddScoped<IUnitRepository, UnitRepository>();
-
-builder.Services.AddValidatorsFromAssemblyContaining<CreateEmployeeDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<UpdateEmployeeDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateTenantDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<UpdateTenantDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateUnitDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<UpdateUnitDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<LeaveRuleDtoValidator>();
-
+builder.Services.AddControllers()
+    .AddFluentValidation(fv =>
+    {
+        fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(UpdateEmployeeDtoValidator)));
+        fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateTenantDtoValidator)));
+        fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(UpdateTenantDtoValidator)));
+        fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateUnitDtoValidator)));
+        fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(UpdateUnitDtoValidator)));
+        fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(LeaveRuleDtoValidator)));
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -43,22 +31,6 @@ builder.Services.AddSwaggerGen(c =>
         Title = "HR Management System API",
         Version = "v1"
     });
-});
-
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-    })
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateEmployeeDtoValidator>());
-
-builder.Services.AddSingleton<RulesEngine.RulesEngine>(sp =>
-{
-    IConfiguration configuration = sp.GetRequiredService<IConfiguration>();
-    string rulesFilePath = configuration.GetValue<string>("C:\\Users\\Ahmad-Elwan\\source\\repos\\Apple\\Domain\\Rules\\Rules.json")!;
-    string rulesJson = File.ReadAllText(rulesFilePath);
-    Workflow workflow = JsonConvert.DeserializeObject<Workflow>(rulesJson)!;
-    return new RulesEngine.RulesEngine(new[] { workflow }, null);
 });
 
 WebApplication app = builder.Build();
