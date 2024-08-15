@@ -7,13 +7,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
-<<<<<<< HEAD
-<<<<<<< HEAD
-using Domain.Validators.CountryValidators;
-=======
->>>>>>> b0815ad (Error)
-=======
->>>>>>> b0815ad7cc9299dfe29de151779d08f342a0c371
 
 namespace Presentation.Routes
 {
