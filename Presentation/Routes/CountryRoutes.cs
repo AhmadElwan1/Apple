@@ -1,13 +1,12 @@
 ﻿using Domain.Abstractions;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Domain.Entities;
-using FluentValidation;
-using FluentValidation.Results;
-using Microsoft.AspNetCore.Mvc;
 using Domain.DTOs.Country;
 using Domain.DTOs.LeaveRule;
+using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
+using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace Presentation.Routes
 {
@@ -15,35 +14,38 @@ namespace Presentation.Routes
     {
         public static void MapCountryRoutes(this IEndpointRouteBuilder endpoints)
         {
-            endpoints.MapPost("/countries", async (ICountryRepository countryRepository, [FromBody] CreateCountryDto createCountryDto, IValidator<CreateCountryDto> validator) =>
+            endpoints.MapPost("/countries", async (CreateCountryDto createCountryDto, IValidator<CreateCountryDto> validator, ICountryRepository countryRepository) =>
             {
-                ValidationResult result = await validator.ValidateAsync(createCountryDto);
-                if (!result.IsValid)
+                ValidationResult validationResult = await validator.ValidateAsync(createCountryDto);
+                if (!validationResult.IsValid)
                 {
-                    return Results.BadRequest(result.Errors);
+                    return Results.BadRequest(validationResult.Errors);
                 }
 
-                Country country = await countryRepository.CreateCountryAsync(createCountryDto.Name);
+                Country country = new Country { Name = createCountryDto.Name };
+                await countryRepository.CreateCountryAsync(country.Name);
                 return Results.Created($"/countries/{country.Id}", country);
             }).WithTags("Country");
 
-            endpoints.MapPost("/countries/{countryId}/rules", async (ICountryRepository countryRepository, int countryId, [FromBody] LeaveRuleDto leaveRuleDto, IValidator<LeaveRuleDto> validator) =>
+            endpoints.MapPost("/countries/{countryId}/rules", async (int countryId, LeaveRuleDto leaveRuleDto, IValidator<LeaveRuleDto> validator, ICountryRepository countryRepository) =>
             {
-                ValidationResult result = await validator.ValidateAsync(leaveRuleDto);
-                if (!result.IsValid)
+                ValidationResult validationResult = await validator.ValidateAsync(leaveRuleDto);
+                if (!validationResult.IsValid)
                 {
-                    return Results.BadRequest(result.Errors);
+                    return Results.BadRequest(validationResult.Errors);
                 }
 
-                LeaveRule? rule = await countryRepository.AddLeaveRuleAsync(countryId, leaveRuleDto);
+                LeaveRule rule = await countryRepository.AddLeaveRuleAsync(countryId, leaveRuleDto);
                 return Results.Created($"/countries/{countryId}/rules/{rule.Id}", rule);
             }).WithTags("Country");
 
-            endpoints.MapPatch("/countries/{id}/activate", async (ICountryRepository countryRepository, int id) =>
+            endpoints.MapPatch("/countries/{id}/activate", async (int id, ICountryRepository countryRepository) =>
             {
                 bool activated = await countryRepository.ActivateCountryAsync(id);
                 if (!activated)
+                {
                     return Results.NotFound("Country not found or no rules to activate.");
+                }
 
                 return Results.Ok();
             }).WithTags("Country");
@@ -54,11 +56,13 @@ namespace Presentation.Routes
                 return Results.Ok(countries);
             }).WithTags("Country");
 
-            endpoints.MapDelete("/countries/{id}", async (ICountryRepository countryRepository, int id) =>
+            endpoints.MapDelete("/countries/{id}", async (int id, ICountryRepository countryRepository) =>
             {
                 bool deleted = await countryRepository.DeleteCountryAsync(id);
                 if (!deleted)
+                {
                     return Results.NotFound("Country not found.");
+                }
 
                 return Results.NoContent();
             }).WithTags("Country");
