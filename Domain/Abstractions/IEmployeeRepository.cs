@@ -11,5 +11,6 @@ namespace Domain.Abstractions
         Task<bool> DeleteEmployeeAsync(int employeeId);
         Task<bool> UpdateEmployeeAsync(int employeeId, Employee updatedEmployee);
         Task<bool> PartialUpdateEmployeeAsync(int employeeId, UpdateEmployeeDto updateEmployeeDto);
+        Task<IEnumerable<Employee>> GetAllEmployeesAsync();
     }
 }

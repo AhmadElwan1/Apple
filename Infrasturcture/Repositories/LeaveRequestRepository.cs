@@ -50,5 +50,9 @@ namespace Infrastructure.Repositories
         {
             return await _dbContext.LeaveRequests.ToListAsync();
         }
+        public async Task<Employee?> GetEmployeeByIdAsync(int employeeId)
+        {
+            return await _dbContext.Employees.FindAsync(employeeId);
+        }
     }
 }

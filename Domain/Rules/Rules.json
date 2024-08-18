@@ -3,18 +3,18 @@
   "Rules": [
     {
       "RuleName": "FatherhoodLeaveRule",
-      "Expression": "employee.HasNewBorn && employee.YearsOfService >= 1 && employee.Gender == 0",
+      "Expression": "employee.HasNewBorn && employee.YearsOfService > 0 && employee.Gender == 0",
       "SuccessEvent": "Fatherhood Leave Approved for 3 days",
       "FailureEvent": "Fatherhood Leave Not Approved"
     },
     {
-      "RuleName": "AnnualLeaveRule",
-      "Expression": "employee.YearsOfService >= 0 && employee.YearsOfService < 5",
+      "RuleName": "AnnualLeaveRuleLessThan5",
+      "Expression": "employee.YearsOfService > 0 && employee.YearsOfService < 5",
       "SuccessEvent": "Annual Leave Approved for 14 Days",
       "FailureEvent": "Annual Leave Not Approved"
     },
     {
-      "RuleName": "AnnualLeaveRule",
+      "RuleName": "AnnualLeaveRuleMoreThan5",
       "Expression": "employee.YearsOfService >= 5",
       "SuccessEvent": "Annual Leave Approved for 21 Days",
       "FailureEvent": "Annual Leave Not Approved"

@@ -13,4 +13,8 @@ public class Employee
 
     public int UnitId { get; set; }
     public Unit Unit { get; set; }
+
+    public int CountryId { get; set; }
+
+    public Country Country { get; set; }
 }

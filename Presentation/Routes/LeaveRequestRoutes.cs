@@ -1,4 +1,5 @@
 ﻿using Domain.Abstractions;
+using Domain.DTOs.LeaveRequest;
 using Domain.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -27,17 +28,20 @@ namespace Presentation.Routes
                 return Results.Ok(leaveRequest);
             }).WithTags("LeaveRequests");
 
-            endpoints.MapPost("/leave-requests", async (LeaveRequest leaveRequest, ILeaveRequestRepository leaveRequestRepository) =>
+            endpoints.MapPost("/leave-requests", async (LeaveRequestDto leaveRequestDto, ILeaveRequestService leaveRequestService) =>
             {
-                if (leaveRequest == null)
+                Employee? employee = await leaveRequestService.GetEmployeeByIdAsync(leaveRequestDto.EmployeeId);
+                if (employee == null)
                 {
-                    return Results.BadRequest("Invalid leave request.");
+                    return Results.NotFound("Employee not found.");
                 }
 
-                await leaveRequestRepository.AddLeaveRequestAsync(leaveRequest);
-                await leaveRequestRepository.SaveChangesAsync();
-                return Results.Created($"/leave-requests/{leaveRequest.Id}", leaveRequest);
+                string approvalMessage = await leaveRequestService.ApproveLeaveRequestAsync(employee);
+
+                return Results.Created($"/leave-requests/{employee.Id}", new { message = approvalMessage });
             }).WithTags("LeaveRequests");
+
+
 
             endpoints.MapPut("/leave-requests/{id}", async (int id, LeaveRequest leaveRequest, ILeaveRequestRepository leaveRequestRepository) =>
             {

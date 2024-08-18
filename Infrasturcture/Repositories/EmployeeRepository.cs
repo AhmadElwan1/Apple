@@ -2,6 +2,7 @@
 using Domain.DTOs.Employee;
 using Domain.Entities;
 using Infrastructure.DB;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
@@ -80,6 +81,11 @@ namespace Infrastructure.Repositories
             _dbContext.Employees.Update(existingEmployee);
             await _dbContext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
+        {
+            return await _dbContext.Employees.ToListAsync();
         }
     }
 }

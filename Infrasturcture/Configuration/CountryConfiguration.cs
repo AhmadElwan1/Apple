@@ -12,6 +12,7 @@ public class CountryConfiguration : IEntityTypeConfiguration<Country>
             .Property(c => c.Status)
             .IsRequired()
             .HasMaxLength(50);
+
     }
 }
 

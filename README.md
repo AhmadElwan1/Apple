@@ -1,13 +1,13 @@
 ## **Overview**
-The RulesEngineDemo is a demonstration project for implementing a rules engine using C#. This project showcases how to build a flexible and maintainable rules engine that can be used to evaluate complex business rules.
+Apple is a demonstration project for implementing a rules engine using C#. This project showcases how to build a flexible and maintainable rules engine that can be used to evaluate complex business rules.
 
 ## **Repository Structure**
 The repository is organized into the following main folders:
 
-- **RulesEngineDemo.Api**: Contains the API layer of the application.
-- **RulesEngineDemo.Presentation**: Contains the routes of the application.
-- **RulesEngineDemo.Domain**: Defines the domain models and entities.
-- **RulesEngineDemo.Infrastructure**: Implements services and data access.
+- **Apple.Api**: Contains the API layer of the application.
+- **Apple.Presentation**: Contains the routes of the application.
+- **Apple.Domain**: Defines the domain models and entities.
+- **Apple.Infrastructure**: Implements services and data access.
 
 ## **Getting Started**
 ### **Prerequisites**
@@ -70,9 +70,11 @@ The repository is organized into the following main folders:
     public class Unit
     {
         public int Id { get; set; }
-
+        public string Name { get; set; }
         public int TenantId { get; set; }
         public Tenant Tenant { get; set; }
+
+        public ICollection<Employee> Employees { get; set; }
     }
     ```
 
@@ -89,10 +91,14 @@ The repository is organized into the following main folders:
         public float YearsOfService { get; set; }
         public int Gender { get; set; }
 
+        public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
+
         public int UnitId { get; set; }
         public Unit Unit { get; set; }
 
-        public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
+        public int CountryId { get; set; }
+
+        public Country Country { get; set; }
     }
     ```
 
@@ -203,29 +209,36 @@ public class LeaveDbContext : DbContext
 ### **Adding The Services Needed**
 ```csharp
 public static class ServiceRegistration
-{
-    public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<LeaveDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-
-        services.AddScoped<ILeaveRulesRepository, LeaveRulesRepository>();
-        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-        services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
-        services.AddScoped<ICountryRepository, CountryRepository>();
-        services.AddScoped<ITenantRepository, TenantRepository>();
-        services.AddScoped<IUnitRepository, UnitRepository>();
-
-        services.AddSingleton<RulesEngine.RulesEngine>(sp =>
+        public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            IConfiguration config = sp.GetRequiredService<IConfiguration>();
-            string rulesFilePath = config.GetValue<string>("C:\\Users\\Ahmad-Elwan\\source\\repos\\Apple\\Domain\\Rules\\Rules.json")!;
-            string rulesJson = File.ReadAllText(rulesFilePath);
-            Workflow workflow = JsonConvert.DeserializeObject<Workflow>(rulesJson)!;
-            return new RulesEngine.RulesEngine(new[] { workflow }, null);
-        });
+            services.AddDbContext<LeaveDbContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<ILeaveRulesRepository, LeaveRulesRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<ITenantRepository, TenantRepository>();
+            services.AddScoped<IUnitRepository, UnitRepository>();
+            services.AddScoped<ILeaveRequestService, LeaveRequestService>();
+
+
+            services.AddSingleton<RulesEngine.RulesEngine>(sp =>
+            {
+                string rulesFilePath = configuration.GetValue<string>("RulesFilePath");
+                if (string.IsNullOrWhiteSpace(rulesFilePath))
+                    throw new InvalidOperationException("Rules file path is not configured.");
+
+                string rulesJson = File.ReadAllText(rulesFilePath);
+                Workflow workflow = JsonSerializer.Deserialize<Workflow>(rulesJson);
+                if (workflow == null || workflow.Rules == null || !workflow.Rules.Any())
+                    throw new InvalidOperationException("Deserialized workflow is null or empty.");
+
+                return new RulesEngine.RulesEngine(new[] { workflow }, null);
+            });
+        }
     }
-}
 ```
 
 ### **Repositories**

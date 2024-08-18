@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
-using Domain.Validators.CountryValidators;
 
 namespace Presentation.Routes
 {

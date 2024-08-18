@@ -1,0 +1,15 @@
+﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Infrastructure.Configuration;
+
+public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
+{
+    public void Configure(EntityTypeBuilder<Employee> builder)
+    {
+        builder.HasOne(e => e.Country)
+            .WithMany()
+            .HasForeignKey(e => e.CountryId);
+    }
+}
