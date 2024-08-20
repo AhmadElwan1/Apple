@@ -1,12 +1,13 @@
 ﻿using Domain.Abstractions;
 using Domain.DTOs.Country;
-using Domain.DTOs.LeaveRule;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using Domain.Aggregates;
+using Domain.DTOs.LeaveType;
 
 namespace Presentation.Routes
 {
@@ -21,22 +22,21 @@ namespace Presentation.Routes
                 {
                     return Results.BadRequest(validationResult.Errors);
                 }
-
-                Country country = new Country { Name = createCountryDto.Name };
-                await countryRepository.CreateCountryAsync(country.Name);
-                return Results.Created($"/countries/{country.Id}", country);
+                
+                await countryRepository.CreateCountryAsync(createCountryDto.Name);
+                return Results.Ok($"Created Country {createCountryDto.Name}");
             }).WithTags("Country");
 
-            endpoints.MapPost("/countries/{countryId}/rules", async (int countryId, LeaveRuleDto leaveRuleDto, IValidator<LeaveRuleDto> validator, ICountryRepository countryRepository) =>
+            endpoints.MapPost("/countries/{countryId}/leave-types", async (int countryId, LeaveTypeDto leaveTypeDto, IValidator<LeaveTypeDto> validator, ICountryRepository countryRepository) =>
             {
-                ValidationResult validationResult = await validator.ValidateAsync(leaveRuleDto);
+                ValidationResult validationResult = await validator.ValidateAsync(leaveTypeDto);
                 if (!validationResult.IsValid)
                 {
                     return Results.BadRequest(validationResult.Errors);
                 }
 
-                LeaveRule rule = await countryRepository.AddLeaveRuleAsync(countryId, leaveRuleDto);
-                return Results.Created($"/countries/{countryId}/rules/{rule.Id}", rule);
+                LeaveType leaveType = await countryRepository.AddLeaveTypeAsync(countryId, leaveTypeDto);
+                return Results.Created($"/countries/{countryId}/leave-types/{leaveType.LeaveTypeId}", leaveType);
             }).WithTags("Country");
 
             endpoints.MapPatch("/countries/{id}/activate", async (int id, ICountryRepository countryRepository) =>
@@ -67,21 +67,21 @@ namespace Presentation.Routes
                 return Results.NoContent();
             }).WithTags("Country");
 
-            endpoints.MapDelete("/countries/{countryId}/rules/{ruleId}", async (int countryId, int ruleId, ICountryRepository countryRepository) =>
+            endpoints.MapDelete("/countries/{countryId}/leave-types/{leaveTypeId}", async (int countryId, int leaveTypeId, ICountryRepository countryRepository) =>
             {
-                bool deleted = await countryRepository.DeleteLeaveRuleAsync(ruleId);
+                bool deleted = await countryRepository.DeleteLeaveTypeAsync(leaveTypeId);
                 if (deleted)
                 {
                     return Results.NoContent();
                 }
-                return Results.NotFound("Leave rule not found.");
+                return Results.NotFound("Leave type not found.");
             }).WithTags("Country");
 
-            endpoints.MapGet("/rules", async (ILeaveRulesRepository leaveRulesRepository) =>
+            endpoints.MapGet("/leave-types", async (ILeaveTypeRepository leaveTypeRepository) =>
             {
-                IEnumerable<LeaveRule> leaveRules = leaveRulesRepository.GetAllRules();
-                return Results.Ok(leaveRules);
-            }).WithTags("LeaveRules");
+                IEnumerable<LeaveType> leaveTypes = await leaveTypeRepository.GetAllLeaveTypesAsync();
+                return Results.Ok(leaveTypes);
+            }).WithTags("LeaveTypes");
         }
     }
 }

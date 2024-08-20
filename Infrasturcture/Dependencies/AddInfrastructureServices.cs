@@ -17,24 +17,24 @@ namespace Infrastructure.Dependencies
             services.AddDbContext<LeaveDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<ILeaveRulesRepository, LeaveRulesRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ITenantRepository, TenantRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
-            services.AddScoped<ILeaveRequestService, LeaveRequestService>();
+            services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
 
+            services.AddScoped<ILeaveRequestService, LeaveRequestService>();
 
             services.AddSingleton<RulesEngine.RulesEngine>(sp =>
             {
-                string rulesFilePath = configuration.GetValue<string>("RulesFilePath");
+                string rulesFilePath = configuration.GetValue<string>("RulesFilePath")!;
                 if (string.IsNullOrWhiteSpace(rulesFilePath))
                     throw new InvalidOperationException("Rules file path is not configured.");
 
                 string rulesJson = File.ReadAllText(rulesFilePath);
-                Workflow workflow = JsonSerializer.Deserialize<Workflow>(rulesJson);
-                if (workflow == null || workflow.Rules == null || !workflow.Rules.Any())
+                Workflow workflow = JsonSerializer.Deserialize<Workflow>(rulesJson)!;
+                if (workflow.Rules == null || !workflow.Rules.Any())
                     throw new InvalidOperationException("Deserialized workflow is null or empty.");
 
                 return new RulesEngine.RulesEngine(new[] { workflow }, null);

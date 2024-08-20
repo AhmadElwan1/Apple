@@ -1,6 +1,6 @@
 ﻿using Domain.Abstractions;
+using Domain.Aggregates;
 using Domain.DTOs.Tenant;
-using Domain.DTOs.LeaveRule;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Entities;
+using Domain.DTOs.LeaveType;
 
 namespace Presentation.Routes
 {
@@ -59,16 +60,17 @@ namespace Presentation.Routes
                 return Results.NotFound("Tenant not found.");
             }).WithTags("Tenants");
 
-            endpoints.MapPost("/tenants/{tenantId}/rules", async (ITenantRepository tenantRepository, int tenantId, [FromBody] LeaveRuleDto leaveRuleDto, IValidator<LeaveRuleDto> validator) =>
+            endpoints.MapPost("/tenants/{tenantId}/leave-types", async (int tenantId, [FromBody] LeaveTypeDto leaveTypeDto, ILeaveTypeRepository leaveTypeRepository, IValidator<LeaveTypeDto> validator) =>
             {
-                ValidationResult? validationResult = await validator.ValidateAsync(leaveRuleDto);
+                ValidationResult validationResult = await validator.ValidateAsync(leaveTypeDto);
                 if (!validationResult.IsValid)
                 {
                     return Results.BadRequest(validationResult.Errors);
                 }
 
-                LeaveRule leaveRule = await tenantRepository.AddOrUpdateLeaveRuleAsync(tenantId, leaveRuleDto);
-                return Results.Created($"/tenants/{tenantId}/rules/{leaveRule.Id}", leaveRule);
+                LeaveType leaveType = await leaveTypeRepository.AddLeaveTypeAsync(tenantId, leaveTypeDto);
+
+                return Results.Created($"/tenants/{tenantId}/leave-types/{leaveType.LeaveTypeId}", leaveType);
             }).WithTags("Tenants");
 
             endpoints.MapDelete("/rules/{ruleId}", async (ITenantRepository tenantRepository, int ruleId) =>

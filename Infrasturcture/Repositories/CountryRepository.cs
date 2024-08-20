@@ -1,5 +1,6 @@
 ﻿using Domain.Abstractions;
-using Domain.DTOs.LeaveRule;
+using Domain.Aggregates;
+using Domain.DTOs.LeaveType;
 using Domain.Entities;
 using Infrastructure.DB;
 using Microsoft.EntityFrameworkCore;
@@ -26,10 +27,10 @@ namespace Infrastructure.Repositories
         public async Task<bool> ActivateCountryAsync(int id)
         {
             Country? country = await _dbContext.Countries
-                .Include(c => c.LeaveRules)
+                .Include(c => c.LeaveTypes)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (country == null || !country.LeaveRules.Any())
+            if (country == null || !country.LeaveTypes.Any())
                 return false;
 
             country.Status = "Active";
@@ -37,28 +38,33 @@ namespace Infrastructure.Repositories
             return true;
         }
 
-        public async Task<LeaveRule> AddLeaveRuleAsync(int countryId, LeaveRuleDto leaveRuleDto)
+        public async Task<LeaveType> AddLeaveTypeAsync(int countryId, LeaveTypeDto leaveTypeDto)
         {
             Country? country = await _dbContext.Countries
-                .Include(c => c.LeaveRules)
                 .FirstOrDefaultAsync(c => c.Id == countryId);
 
-            LeaveRule rule = new LeaveRule
+            if (country == null)
+                return null;
+
+            LeaveType leaveType = new LeaveType
             {
-                RuleName = leaveRuleDto.RuleName,
-                Expression = leaveRuleDto.Expression,
-                SuccessEvent = leaveRuleDto.SuccessEvent,
-                FailureEvent = leaveRuleDto.FailureEvent,
-                TenantId = leaveRuleDto.TenantId,
-                CountryId = countryId
+                LeaveTypeName = leaveTypeDto.LeaveTypeName,
+                Entilement = leaveTypeDto.Entilement,
+                Accural = leaveTypeDto.Accural,
+                CarryOver = leaveTypeDto.CarryOver,
+                Expression = leaveTypeDto.Expression,
+                NoticePeriod = leaveTypeDto.NoticePeriod,
+                CountryId = countryId,
+                TenantId = leaveTypeDto.TenantId,
+                DocumentRequired = leaveTypeDto.DocumentRequired
             };
 
-            country.LeaveRules.Add(rule);
-            _dbContext.LeaveRules.Add(rule);
+            _dbContext.LeaveTypes.Add(leaveType);
             await _dbContext.SaveChangesAsync();
 
-            return rule;
+            return leaveType;
         }
+
 
         public async Task<IEnumerable<Country>> GetAllCountriesAsync()
         {
@@ -76,15 +82,24 @@ namespace Infrastructure.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteLeaveRuleAsync(int ruleId)
+        public Task<bool> DeleteLeaveRuleAsync(int ruleId)
         {
-            LeaveRule? rule = await _dbContext.LeaveRules.FindAsync(ruleId);
-            if (rule == null)
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> DeleteLeaveTypeAsync(int leaveTypeId)
+        {
+            LeaveType? leaveType = await _dbContext.LeaveTypes.FindAsync(leaveTypeId);
+
+            if (leaveType == null)
                 return false;
 
-            _dbContext.LeaveRules.Remove(rule);
+            _dbContext.LeaveTypes.Remove(leaveType);
+
             await _dbContext.SaveChangesAsync();
+
             return true;
         }
+
     }
 }

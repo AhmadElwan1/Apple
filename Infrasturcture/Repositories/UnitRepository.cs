@@ -17,10 +17,22 @@ namespace Infrastructure.Repositories
 
         public async Task<Unit?> GetUnitByIdAsync(int unitId)
         {
-            return await _dbContext.Units
-                .Include(u => u.Employees)
+            Unit? unit = await _dbContext.Units
                 .FirstOrDefaultAsync(u => u.Id == unitId);
+
+            if (unit == null)
+                return null;
+
+            ICollection<int> employeeIds = unit.EmployeeIds;
+            List<Employee> employees = await _dbContext.Employees
+                .Where(e => employeeIds.Contains(e.Id))
+                .ToListAsync();
+
+            unit.EmployeeIds = employees.Select(e => e.Id).ToList();
+
+            return unit;
         }
+
 
         public async Task<Unit> CreateUnitAsync(CreateUnitDto createUnitDto)
         {

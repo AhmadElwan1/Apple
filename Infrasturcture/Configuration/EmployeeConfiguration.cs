@@ -8,8 +8,13 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
 {
     public void Configure(EntityTypeBuilder<Employee> builder)
     {
-        builder.HasOne(e => e.Country)
+        builder.HasOne<Country>()
             .WithMany()
             .HasForeignKey(e => e.CountryId);
+
+        builder.HasOne<Unit>()
+            .WithMany()
+            .HasForeignKey(e => e.UnitId);
     }
+
 }

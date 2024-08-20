@@ -26,7 +26,7 @@ public static class ApplicationServiceExtensions
                 fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(UpdateTenantDtoValidator)));
                 fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateUnitDtoValidator)));
                 fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(UpdateUnitDtoValidator)));
-                fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(LeaveRuleDtoValidator)));
+                fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(LeaveTypeDtoValidator)));
                 fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateCountryDtoValidator)));
             });
 

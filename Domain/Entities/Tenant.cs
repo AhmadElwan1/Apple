@@ -1,11 +1,12 @@
-﻿namespace Domain.Entities;
+﻿using Domain.Aggregates;
 
-public class Tenant
+namespace Domain.Entities
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    
-    public ICollection<LeaveRule> LeaveRules { get; set; } = new List<LeaveRule>();
+    public class Tenant
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
 
-    public ICollection<Unit> Units { get; set; } = new List<Unit>();
+        public ICollection<LeaveType>? LeaveTypes { get; set; } = new List<LeaveType>();
+    }
 }

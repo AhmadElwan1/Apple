@@ -14,21 +14,23 @@ namespace Presentation.Routes
         {
             endpoints.MapPost("/employees", async (CreateEmployeeDto createEmployeeDto, IEmployeeRepository employeeRepository) =>
             {
-
                 Employee employee = new Employee
                 {
                     Name = createEmployeeDto.Name,
-                    IsMarried = createEmployeeDto.IsMarried,
                     HasNewBorn = createEmployeeDto.HasNewBorn,
+                    YearsOfService = createEmployeeDto.YearsOfService,
                     UnitId = createEmployeeDto.UnitId,
                     CountryId = createEmployeeDto.CountryId,
-                    Gender = createEmployeeDto.Gender
+                    Gender = createEmployeeDto.Gender,
+                    MaritalStatus = createEmployeeDto.MaritalStatus,
+                    Religion = createEmployeeDto.Religion
                 };
 
                 employee = await employeeRepository.CreateEmployeeAsync(employee);
 
                 return Results.Created($"/employees/{employee.Id}", employee);
             }).WithTags("Employees");
+
 
 
 
@@ -110,7 +112,7 @@ namespace Presentation.Routes
 
             endpoints.MapGet("/employees/{employeeId}", async (int employeeId, IEmployeeRepository employeeRepository) =>
             {
-                var employee = await employeeRepository.GetEmployeeByIdAsync(employeeId);
+                Employee? employee = await employeeRepository.GetEmployeeByIdAsync(employeeId);
                 if (employee == null)
                 {
                     return Results.NotFound("Employee not found.");

@@ -57,13 +57,20 @@ namespace Infrastructure.Repositories
                 return false;
 
             existingEmployee.Name = updatedEmployee.Name;
-            existingEmployee.IsMarried = updatedEmployee.IsMarried;
             existingEmployee.HasNewBorn = updatedEmployee.HasNewBorn;
+            existingEmployee.YearsOfService = updatedEmployee.YearsOfService;
+            existingEmployee.UnitId = updatedEmployee.UnitId;
+            existingEmployee.CountryId = updatedEmployee.CountryId;
+            existingEmployee.Gender = updatedEmployee.Gender;
+            existingEmployee.MaritalStatus = updatedEmployee.MaritalStatus;
+            existingEmployee.Religion = updatedEmployee.Religion;
 
             _dbContext.Employees.Update(existingEmployee);
+
             await _dbContext.SaveChangesAsync();
             return true;
         }
+
 
         public async Task<bool> PartialUpdateEmployeeAsync(int employeeId, UpdateEmployeeDto updateEmployeeDto)
         {
@@ -71,17 +78,29 @@ namespace Infrastructure.Repositories
             if (existingEmployee == null)
                 return false;
 
-            if (updateEmployeeDto.Name != null)
+            if (!string.IsNullOrEmpty(updateEmployeeDto.Name))
                 existingEmployee.Name = updateEmployeeDto.Name;
-            if (updateEmployeeDto.IsMarried.HasValue)
-                existingEmployee.IsMarried = updateEmployeeDto.IsMarried.Value;
+
             if (updateEmployeeDto.HasNewBorn.HasValue)
                 existingEmployee.HasNewBorn = updateEmployeeDto.HasNewBorn.Value;
+
+            if (updateEmployeeDto.YearsOfService.HasValue)
+                existingEmployee.YearsOfService = updateEmployeeDto.YearsOfService.Value;
+
+            if (updateEmployeeDto.Gender.HasValue)
+                existingEmployee.Gender = updateEmployeeDto.Gender.Value;
+
+            if (updateEmployeeDto.MaritalStatus.HasValue)
+                existingEmployee.MaritalStatus = updateEmployeeDto.MaritalStatus.Value;
+
+            if (updateEmployeeDto.Religion.HasValue)
+                existingEmployee.Religion = updateEmployeeDto.Religion.Value;
 
             _dbContext.Employees.Update(existingEmployee);
             await _dbContext.SaveChangesAsync();
             return true;
         }
+
 
         public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
         {

@@ -1,4 +1,5 @@
-﻿using Domain.DTOs.LeaveRule;
+﻿using Domain.Aggregates;
+using Domain.DTOs.LeaveType;
 using Domain.Entities;
 
 namespace Domain.Abstractions
@@ -7,9 +8,9 @@ namespace Domain.Abstractions
     {
         Task<Country> CreateCountryAsync(string name);
         Task<bool> ActivateCountryAsync(int id);
-        Task<LeaveRule> AddLeaveRuleAsync(int countryId, LeaveRuleDto leaveRuleDto);
         Task<IEnumerable<Country>> GetAllCountriesAsync();
+        Task<LeaveType> AddLeaveTypeAsync(int countryId, LeaveTypeDto leaveTypeDto);
         Task<bool> DeleteCountryAsync(int id);
-        Task<bool> DeleteLeaveRuleAsync(int ruleId);
+        Task<bool> DeleteLeaveTypeAsync(int ruleId);
     }
 }

@@ -8,13 +8,14 @@ public class UnitConfiguration : IEntityTypeConfiguration<Unit>
 {
     public void Configure(EntityTypeBuilder<Unit> builder)
     {
-        builder.HasMany(u => u.Employees)
-            .WithOne(e => e.Unit)
-            .HasForeignKey(e => e.UnitId);
+        builder.HasOne<Tenant>()
+            .WithMany()
+            .HasForeignKey(u => u.TenantId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(u => u.Tenant)
-            .WithMany(t => t.Units)
-            .HasForeignKey(e => e.TenantId);
+        builder.HasMany<Employee>()
+            .WithOne()
+            .HasForeignKey(e => e.UnitId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
-

@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities
+﻿using Domain.Aggregates;
+
+namespace Domain.Entities
 {
     public class Country
     {
@@ -6,6 +8,6 @@
         public string Name { get; set; }
         public string Status { get; set; } = "Draft";
 
-        public ICollection<LeaveRule> LeaveRules { get; set; } = new List<LeaveRule>();
+        public ICollection<LeaveType> LeaveTypes { get; set; } = new List<LeaveType>();
     }
 }
