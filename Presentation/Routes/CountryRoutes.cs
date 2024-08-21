@@ -27,14 +27,8 @@ namespace Presentation.Routes
                 return Results.Ok($"Created Country {createCountryDto.Name}");
             }).WithTags("Country");
 
-            endpoints.MapPost("/countries/{countryId}/leave-types", async (int countryId, LeaveTypeDto leaveTypeDto, IValidator<LeaveTypeDto> validator, ICountryRepository countryRepository) =>
+            endpoints.MapPost("/countries/{countryId}/leave-types", async (int countryId, LeaveTypeDto leaveTypeDto, ICountryRepository countryRepository) =>
             {
-                ValidationResult validationResult = await validator.ValidateAsync(leaveTypeDto);
-                if (!validationResult.IsValid)
-                {
-                    return Results.BadRequest(validationResult.Errors);
-                }
-
                 LeaveType leaveType = await countryRepository.AddLeaveTypeAsync(countryId, leaveTypeDto);
                 return Results.Created($"/countries/{countryId}/leave-types/{leaveType.LeaveTypeId}", leaveType);
             }).WithTags("Country");

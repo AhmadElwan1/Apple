@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Infrastructure
+namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -19,7 +19,7 @@ namespace Infrastructure
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                    Status = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,36 +40,32 @@ namespace Infrastructure
                 });
 
             migrationBuilder.CreateTable(
-                name: "LeaveTypes",
+                name: "LeaveRules",
                 columns: table => new
                 {
-                    LeaveTypeId = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    LeaveTypeName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Entilement = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Accural = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    CarryOver = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Expression = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    NoticePeriod = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    RuleName = table.Column<string>(type: "text", nullable: false),
+                    Expression = table.Column<string>(type: "text", nullable: false),
+                    SuccessEvent = table.Column<string>(type: "text", nullable: false),
+                    FailureEvent = table.Column<string>(type: "text", nullable: false),
                     CountryId = table.Column<int>(type: "integer", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: true),
-                    DocumentRequired = table.Column<bool>(type: "boolean", nullable: false)
+                    TenantId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LeaveTypes", x => x.LeaveTypeId);
+                    table.PrimaryKey("PK_LeaveRules", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LeaveTypes_Countries_CountryId",
+                        name: "FK_LeaveRules_Countries_CountryId",
                         column: x => x.CountryId,
                         principalTable: "Countries",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LeaveTypes_Tenants_TenantId",
+                        name: "FK_LeaveRules_Tenants_TenantId",
                         column: x => x.TenantId,
                         principalTable: "Tenants",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -79,8 +75,7 @@ namespace Infrastructure
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    EmployeeIds = table.Column<int[]>(type: "integer[]", nullable: false)
+                    TenantId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,7 +85,7 @@ namespace Infrastructure
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,13 +95,12 @@ namespace Infrastructure
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
+                    IsMarried = table.Column<bool>(type: "boolean", nullable: false),
                     HasNewBorn = table.Column<bool>(type: "boolean", nullable: false),
                     YearsOfService = table.Column<float>(type: "real", nullable: false),
-                    UnitId = table.Column<int>(type: "integer", nullable: false),
-                    CountryId = table.Column<int>(type: "integer", nullable: false),
                     Gender = table.Column<int>(type: "integer", nullable: false),
-                    MaritalStatus = table.Column<int>(type: "integer", nullable: false),
-                    Religion = table.Column<int>(type: "integer", nullable: false)
+                    UnitId = table.Column<int>(type: "integer", nullable: false),
+                    CountryId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -122,7 +116,7 @@ namespace Infrastructure
                         column: x => x.UnitId,
                         principalTable: "Units",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -163,13 +157,13 @@ namespace Infrastructure
                 column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LeaveTypes_CountryId",
-                table: "LeaveTypes",
+                name: "IX_LeaveRules_CountryId",
+                table: "LeaveRules",
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LeaveTypes_TenantId",
-                table: "LeaveTypes",
+                name: "IX_LeaveRules_TenantId",
+                table: "LeaveRules",
                 column: "TenantId");
 
             migrationBuilder.CreateIndex(
@@ -185,7 +179,7 @@ namespace Infrastructure
                 name: "LeaveRequests");
 
             migrationBuilder.DropTable(
-                name: "LeaveTypes");
+                name: "LeaveRules");
 
             migrationBuilder.DropTable(
                 name: "Employees");
