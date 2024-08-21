@@ -8,4 +8,5 @@ public class LeaveRequest
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public bool IsApproved { get; set; }
+    public string LeaveTypeName { get; set; }
 }

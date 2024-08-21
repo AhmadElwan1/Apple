@@ -12,10 +12,5 @@ public class UnitConfiguration : IEntityTypeConfiguration<Unit>
             .WithMany()
             .HasForeignKey(u => u.TenantId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasMany<Employee>()
-            .WithOne()
-            .HasForeignKey(e => e.UnitId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }

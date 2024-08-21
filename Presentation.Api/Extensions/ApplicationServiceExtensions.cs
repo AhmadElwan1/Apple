@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Domain.Validators.CountryValidators;
 using Domain.Validators.EmployeeValidators;
-using Domain.Validators.LeaveRuleValidators;
 using Domain.Validators.TenantValidators;
 using Domain.Validators.UnitValidators;
 using FluentValidation.AspNetCore;
@@ -26,7 +25,6 @@ public static class ApplicationServiceExtensions
                 fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(UpdateTenantDtoValidator)));
                 fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateUnitDtoValidator)));
                 fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(UpdateUnitDtoValidator)));
-                fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(LeaveTypeDtoValidator)));
                 fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateCountryDtoValidator)));
             });
 

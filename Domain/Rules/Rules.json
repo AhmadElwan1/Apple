@@ -4,6 +4,7 @@
       "Jordan": {
         "leaveTypes": {
           "annualLeave": {
+            "LeaveTypeName": "annualLeave",
             "entitlement": "yearsOfService < 5 ? '14 days per year' : '21 days per year'",
             "accumulation": "Yes",
             "carryOver": "Up to 2 years",
@@ -15,6 +16,7 @@
             }
           },
           "sickLeave": {
+            "LeaveTypeName": "sickLeave",
             "entitlement": "14 days per year",
             "accumulation": "Not applicable",
             "carryOver": "Not applicable",
@@ -30,6 +32,7 @@
       "Armenia": {
         "leaveTypes": {
           "annualLeave": {
+            "LeaveTypeName": "annualLeave",
             "entitlement": "20 days per year",
             "accumulation": "Yes",
             "carryOver": "Up to 2 years",
@@ -41,6 +44,7 @@
             }
           },
           "sickLeave": {
+            "LeaveTypeName": "sickLeave",
             "entitlement": "14 days per year (paid), up to 90 days (unpaid)",
             "accumulation": "Not applicable",
             "carryOver": "Not applicable",
@@ -56,6 +60,7 @@
       "SaudiArabia": {
         "leaveTypes": {
           "annualLeave": {
+            "LeaveTypeName": "annualLeave",
             "entitlement": "21 days per year",
             "accumulation": "Yes",
             "carryOver": "Up to 1 year",
@@ -67,6 +72,7 @@
             }
           },
           "sickLeave": {
+            "LeaveTypeName": "sickLeave",
             "entitlement": "30 days per year (paid), additional 30 days (unpaid)",
             "accumulation": "Not applicable",
             "carryOver": "Not applicable",
@@ -82,6 +88,7 @@
       "Kuwait": {
         "leaveTypes": {
           "annualLeave": {
+            "LeaveTypeName": "annualLeave",
             "entitlement": "30 days per year",
             "accumulation": "Yes",
             "carryOver": "Up to 2 years",
@@ -93,6 +100,7 @@
             }
           },
           "sickLeave": {
+            "LeaveTypeName": "sickLeave",
             "entitlement": "15 days per year (paid), up to 60 days (unpaid)",
             "accumulation": "Not applicable",
             "carryOver": "Not applicable",
@@ -112,6 +120,7 @@
           "California": {
             "leaveTypes": {
               "annualLeave": {
+                "LeaveTypeName": "annualLeave",
                 "entitlement": "15 days per year",
                 "accumulation": "Yes",
                 "carryOver": "Up to 1 year",
@@ -123,6 +132,7 @@
                 }
               },
               "sickLeave": {
+                "LeaveTypeName": "sickLeave",
                 "entitlement": "9 days per year",
                 "accumulation": "Yes",
                 "carryOver": "Up to 1 year",
@@ -138,6 +148,7 @@
           "Texas": {
             "leaveTypes": {
               "annualLeave": {
+                "LeaveTypeName": "annualLeave",
                 "entitlement": "15 days per year",
                 "accumulation": "Yes",
                 "carryOver": "Up to 1 year",
@@ -149,6 +160,7 @@
                 }
               },
               "sickLeave": {
+                "LeaveTypeName": "sickLeave",
                 "entitlement": "Accrual-based system, with a standard practice of 8 days per year",
                 "accumulation": "Yes",
                 "carryOver": "Up to 1 year",
@@ -168,6 +180,7 @@
           "Dubai": {
             "leaveTypes": {
               "annualLeave": {
+                "LeaveTypeName": "annualLeave",
                 "entitlement": "30 days per year",
                 "accumulation": "Yes",
                 "carryOver": "Up to 2 years",
@@ -179,6 +192,7 @@
                 }
               },
               "sickLeave": {
+                "LeaveTypeName": "sickLeave",
                 "entitlement": "90 days per year (paid), additional 90 days (unpaid)",
                 "accumulation": "Not applicable",
                 "carryOver": "Not applicable",
@@ -194,6 +208,7 @@
           "AbuDhabi": {
             "leaveTypes": {
               "annualLeave": {
+                "LeaveTypeName": "annualLeave",
                 "entitlement": "30 days per year",
                 "accumulation": "Yes",
                 "carryOver": "Up to 2 years",
@@ -205,6 +220,7 @@
                 }
               },
               "sickLeave": {
+                "LeaveTypeName": "sickLeave",
                 "entitlement": "90 days per year (paid), additional 90 days (unpaid)",
                 "accumulation": "Not applicable",
                 "carryOver": "Not applicable",
@@ -220,6 +236,6 @@
         }
       }
     }
-  }
+  },
+  "workflowName": "LeaveRequestWorkflow"
 }
-s

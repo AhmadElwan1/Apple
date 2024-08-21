@@ -10,6 +10,8 @@ namespace Domain.Abstractions
         Task<LeaveType> AddLeaveTypeAsync(int tenantId, LeaveTypeDto leaveRuleDto);
         Task<bool> DeleteLeaveRuleAsync(int ruleId);
         Task<bool> DeleteTenantAsync(int tenantId);
+        Task<IEnumerable<Tenant>> GetAllTenantsAsync();
         Task<bool> UpdateTenantNameAsync(int tenantId, string name);
+
     }
 }

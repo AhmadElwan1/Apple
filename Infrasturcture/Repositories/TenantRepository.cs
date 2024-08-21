@@ -144,6 +144,11 @@ namespace Infrastructure.Repositories
             return true;
         }
 
+        public async Task<IEnumerable<Tenant>> GetAllTenantsAsync()
+        {
+            return await _dbContext.Set<Tenant>().ToListAsync();
+        }
+
         public async Task<bool> UpdateTenantNameAsync(int tenantId, string newName)
         {
             Tenant? tenant = await _dbContext.Tenants.FindAsync(tenantId);

@@ -92,6 +92,12 @@ namespace Presentation.Routes
                 }
                 return Results.NotFound("Tenant not found.");
             }).WithTags("Tenants");
+
+            endpoints.MapGet("/tenants", async (ITenantRepository tenantRepository) =>
+            {
+                IEnumerable<Tenant> tenants = await tenantRepository.GetAllTenantsAsync();
+                return Results.Ok(tenants);
+            }).WithTags("Tenants");
         }
     }
 }

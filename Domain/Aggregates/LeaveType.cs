@@ -1,5 +1,4 @@
-﻿using Domain.DTOs.LeaveType;
-using Domain.Entities;
+﻿using Domain.Entities;
 
 namespace Domain.Aggregates
 {

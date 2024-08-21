@@ -31,28 +31,6 @@ namespace Presentation.Routes
                 return Results.Created($"/employees/{employee.Id}", employee);
             }).WithTags("Employees");
 
-
-
-
-            endpoints.MapPost("/employees/{employeeId}/leave-requests", async (HttpContext httpContext, int employeeId) =>
-            {
-                IEmployeeRepository employeeRepository = httpContext.RequestServices.GetRequiredService<IEmployeeRepository>();
-                LeaveRequest? leaveRequest = await httpContext.Request.ReadFromJsonAsync<LeaveRequest>();
-
-                if (leaveRequest == null)
-                {
-                    return Results.BadRequest("Leave request data is required.");
-                }
-
-                LeaveRequest? createdLeaveRequest = await employeeRepository.CreateLeaveRequestAsync(employeeId, leaveRequest);
-                if (createdLeaveRequest == null)
-                {
-                    return Results.NotFound("Employee not found.");
-                }
-
-                return Results.Created($"/leave-requests/{createdLeaveRequest.Id}", createdLeaveRequest);
-            }).WithTags("Employees");
-
             endpoints.MapDelete("/employees/{employeeId}", async (HttpContext httpContext, int employeeId) =>
             {
                 IEmployeeRepository employeeRepository = httpContext.RequestServices.GetRequiredService<IEmployeeRepository>();

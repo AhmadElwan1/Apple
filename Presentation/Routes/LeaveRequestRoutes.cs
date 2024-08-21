@@ -30,17 +30,32 @@ namespace Presentation.Routes
 
             endpoints.MapPost("/leave-requests", async (LeaveRequestDto leaveRequestDto, ILeaveRequestService leaveRequestService) =>
             {
+                if (string.IsNullOrEmpty(leaveRequestDto.LeaveTypeName))
+                {
+                    return Results.BadRequest("LeaveTypeName is required.");
+                }
+
                 Employee? employee = await leaveRequestService.GetEmployeeByIdAsync(leaveRequestDto.EmployeeId);
                 if (employee == null)
                 {
                     return Results.NotFound("Employee not found.");
                 }
 
-                string approvalMessage = await leaveRequestService.ApproveLeaveRequestAsync(employee);
+                string countryName = await leaveRequestService.GetCountryNameByIdAsync(employee.CountryId);
+                if (string.IsNullOrEmpty(countryName))
+                {
+                    return Results.BadRequest("Country information could not be determined.");
+                }
 
-                return Results.Created($"/leave-requests/{employee.Id}", new { message = approvalMessage });
+                string resultMessage = await leaveRequestService.CreateLeaveRequestAsync(leaveRequestDto.EmployeeId, leaveRequestDto.LeaveTypeName);
+
+                if (resultMessage.Contains("not found"))
+                {
+                    return Results.NotFound(resultMessage);
+                }
+
+                return Results.Created($"/leave-requests/{leaveRequestDto.EmployeeId}", new { message = resultMessage });
             }).WithTags("LeaveRequests");
-
 
 
             endpoints.MapPut("/leave-requests/{id}", async (int id, LeaveRequest leaveRequest, ILeaveRequestRepository leaveRequestRepository) =>

@@ -27,18 +27,6 @@ namespace Infrastructure.Repositories
             return employee;
         }
 
-        public async Task<LeaveRequest?> CreateLeaveRequestAsync(int employeeId, LeaveRequest leaveRequest)
-        {
-            Employee? employee = await GetEmployeeByIdAsync(employeeId);
-            if (employee == null)
-                return null;
-
-            leaveRequest.EmployeeId = employeeId;
-            _dbContext.LeaveRequests.Add(leaveRequest);
-            await _dbContext.SaveChangesAsync();
-            return leaveRequest;
-        }
-
         public async Task<bool> DeleteEmployeeAsync(int employeeId)
         {
             Employee? employee = await _dbContext.Employees.FindAsync(employeeId);
