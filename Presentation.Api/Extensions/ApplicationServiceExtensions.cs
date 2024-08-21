@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Domain.DTOs.Country;
-using Domain.DTOs.LeaveType;
 using Domain.DTOs.Tenant;
 using Domain.Validators.CountryValidators;
 using Domain.Validators.EmployeeValidators;

@@ -9,10 +9,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Infrastructure
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(LeaveDbContext))]
-    [Migration("20240820160942_Initial")]
+    [Migration("20240821114652_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -162,6 +162,10 @@ namespace Infrastructure
                     b.Property<bool>("IsApproved")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("LeaveTypeName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -196,10 +200,6 @@ namespace Infrastructure
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int[]>("EmployeeIds")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -244,7 +244,7 @@ namespace Infrastructure
                     b.HasOne("Domain.Entities.Unit", null)
                         .WithMany()
                         .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

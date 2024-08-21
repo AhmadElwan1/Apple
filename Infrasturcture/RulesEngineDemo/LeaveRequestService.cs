@@ -17,7 +17,7 @@ namespace Infrastructure.RulesEngineDemo
             _rulesEngine = rulesEngine;
         }
 
-        public async Task<string> ApproveLeaveRequestAsync(int employeeId, string leaveTypeName, string country)
+        public async Task<string> ApproveLeaveRequestAsync(int employeeId, string leaveTypeName)
         {
             try
             {
@@ -27,44 +27,55 @@ namespace Infrastructure.RulesEngineDemo
                     return "Employee not found.";
                 }
 
-                List<RuleResultTree> results = await ExecuteRulesAsync(employee, leaveTypeName, country);
-                RuleResultTree? successfulRule = results.FirstOrDefault(r => r.IsSuccess);
-                string approvalMessage = successfulRule?.Rule.SuccessEvent ?? "Leave Not Approved";
+                bool hasApprovedLeave = await _context.LeaveRequests
+                    .AnyAsync(lr => lr.EmployeeId == employeeId && lr.IsApproved);
 
-                (TimeSpan duration, string message) = GetLeaveDurationAndMessage(leaveTypeName, country);
+                if (hasApprovedLeave)
+                {
+                    return "An approved leave already exists for this employee.";
+                }
+
+                List<RuleResultTree> results = await ExecuteRulesAsync(employee, leaveTypeName);
+
+                RuleResultTree? matchingRule = results
+                    .FirstOrDefault(r => r.Rule.RuleName == leaveTypeName && r.IsSuccess);
+
+                string approvalMessage = matchingRule?.Rule.SuccessEvent ?? "Leave Not Approved";
+
+                (TimeSpan duration, string message) = GetLeaveDurationAndMessage(leaveTypeName);
 
                 DateTime startDate = DateTime.UtcNow;
                 DateTime endDate = startDate.Add(duration);
 
-                await CreateLeaveRequestAsync(employee.Id, startDate, endDate, duration != TimeSpan.Zero);
+                await CreateLeaveRequestAsync(employee.Id, startDate, endDate, duration != TimeSpan.Zero, leaveTypeName);
 
-                return message;
+                return approvalMessage;
             }
             catch (Exception ex)
             {
-                // Log exception
                 return "An error occurred while processing the leave request.";
             }
         }
 
-        private async Task<List<RuleResultTree>> ExecuteRulesAsync(Employee employee, string leaveTypeName, string country)
+        private async Task<List<RuleResultTree>> ExecuteRulesAsync(Employee employee, string leaveTypeName)
         {
-            RuleParameter employeeRuleParams = new RuleParameter("employee", employee);
-            RuleParameter leaveTypeParam = new RuleParameter("leaveTypeName", leaveTypeName);
-            RuleParameter countryParam = new RuleParameter("country", country);
+            Console.WriteLine($"Executing rules for leaveTypeName: {leaveTypeName}");
 
-            return await _rulesEngine.ExecuteAllRulesAsync("LeaveRequestWorkflow", employeeRuleParams, leaveTypeParam, countryParam);
+            return await _rulesEngine.ExecuteAllRulesAsync("LeaveRequestWorkflow", employee, leaveTypeName);
         }
 
-        private (TimeSpan, string) GetLeaveDurationAndMessage(string leaveTypeName, string country)
+        private (TimeSpan, string) GetLeaveDurationAndMessage(string? ruleName)
         {
-            var leaveTypeConfigurations = new Dictionary<string, Dictionary<string, (TimeSpan, string)>>
+            var leaveTypeConfigurations = new Dictionary<string, (TimeSpan, string)>
             {
-                // Configuration omitted for brevity
+                { "FatherhoodLeaveRule", (TimeSpan.FromDays(3), "Fatherhood Leave Approved for 3 days") },
+                { "AnnualLeaveRuleLessThan5", (TimeSpan.FromDays(14), "Annual Leave Approved for 14 Days") },
+                { "AnnualLeaveRuleMoreThan5", (TimeSpan.FromDays(21), "Annual Leave Approved for 21 Days") },
+                { "SickLeaveRule", (TimeSpan.FromDays(1), "Sick Leave Approved for 1 Day") },
+                { "MaternityLeaveRule", (TimeSpan.FromDays(60), "Maternity Leave Approved for 2 Months") }
             };
 
-            if (leaveTypeConfigurations.TryGetValue(country, out var leaveTypes) &&
-                leaveTypes.TryGetValue(leaveTypeName, out var result))
+            if (leaveTypeConfigurations.TryGetValue(ruleName ?? string.Empty, out var result))
             {
                 return result;
             }
@@ -72,14 +83,20 @@ namespace Infrastructure.RulesEngineDemo
             return (TimeSpan.Zero, "Leave Not Approved");
         }
 
-        private async Task CreateLeaveRequestAsync(int employeeId, DateTime startDate, DateTime endDate, bool isApproved)
+        private async Task CreateLeaveRequestAsync(int employeeId, DateTime startDate, DateTime endDate, bool isApproved, string leaveTypeName)
         {
-            var leaveRequest = new LeaveRequest
+            if (string.IsNullOrEmpty(leaveTypeName))
+            {
+                throw new ArgumentException("LeaveTypeName cannot be null or empty.", nameof(leaveTypeName));
+            }
+
+            LeaveRequest leaveRequest = new LeaveRequest
             {
                 EmployeeId = employeeId,
                 StartDate = startDate,
                 EndDate = endDate,
-                IsApproved = isApproved
+                IsApproved = isApproved,
+                LeaveTypeName = leaveTypeName
             };
 
             try
@@ -89,7 +106,6 @@ namespace Infrastructure.RulesEngineDemo
             }
             catch (Exception ex)
             {
-                // Log exception
                 throw new ApplicationException("Failed to create leave request.", ex);
             }
         }
@@ -112,21 +128,35 @@ namespace Infrastructure.RulesEngineDemo
                 return "Employee not found.";
             }
 
-            string country = await GetCountryNameByIdAsync(employee.CountryId);
+            bool hasApprovedLeave = await HasApprovedLeaveAsync(employeeId);
+            if (hasApprovedLeave)
+            {
+                return "Employee already has an approved leave request.";
+            }
 
-            List<RuleResultTree> results = await ExecuteRulesAsync(employee, leaveTypeName, country);
-            RuleResultTree? successfulRule = results.FirstOrDefault(r => r.IsSuccess);
-            string approvalMessage = successfulRule?.Rule.SuccessEvent ?? "Leave Not Approved";
+            List<RuleResultTree> results = await ExecuteRulesAsync(employee, leaveTypeName);
 
-            (TimeSpan duration, string message) = GetLeaveDurationAndMessage(leaveTypeName, country);
+            RuleResultTree? matchingRule = results
+                .FirstOrDefault(r => r.Rule.RuleName == leaveTypeName && r.IsSuccess);
+
+            string approvalMessage = matchingRule?.Rule.SuccessEvent ?? "Leave Not Approved";
+
+            (TimeSpan duration, string leaveMessage) = GetLeaveDurationAndMessage(leaveTypeName);
+
+            if (duration == TimeSpan.Zero)
+            {
+                return "Leave Not Approved";
+            }
 
             DateTime startDate = DateTime.UtcNow;
             DateTime endDate = startDate.Add(duration);
 
-            await CreateLeaveRequestAsync(employee.Id, startDate, endDate, duration != TimeSpan.Zero);
+            await CreateLeaveRequestAsync(employee.Id, startDate, endDate, duration != TimeSpan.Zero, leaveTypeName);
 
-            return message;
+            return leaveMessage;
         }
+
+
 
         public async Task<string> GetCountryNameByIdAsync(int countryId)
         {

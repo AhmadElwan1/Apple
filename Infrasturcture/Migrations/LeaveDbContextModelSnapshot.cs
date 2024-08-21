@@ -159,6 +159,10 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsApproved")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("LeaveTypeName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
 

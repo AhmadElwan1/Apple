@@ -1,12 +1,12 @@
-﻿using System.Text.Json;
-using Domain.Abstractions;
-using Infrastructure.Repositories;
-using Microsoft.Extensions.DependencyInjection;
-using RulesEngine.Models;
-using Microsoft.Extensions.Configuration;
+﻿using Domain.Abstractions;
 using Infrastructure.DB;
+using Infrastructure.Repositories;
 using Infrastructure.RulesEngineDemo;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using RulesEngine.Models;
+using System.Text.Json;
 
 namespace Infrastructure.Dependencies
 {
@@ -23,21 +23,26 @@ namespace Infrastructure.Dependencies
             services.AddScoped<ITenantRepository, TenantRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
             services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
-
             services.AddScoped<ILeaveRequestService, LeaveRequestService>();
 
             services.AddSingleton<RulesEngine.RulesEngine>(sp =>
             {
-                string rulesFilePath = configuration.GetValue<string>("RulesFilePath")!;
-                if (string.IsNullOrWhiteSpace(rulesFilePath))
-                    throw new InvalidOperationException("Rules file path is not configured.");
+                string rulesFilePath = "C:\\Users\\Ahmad-Elwan\\source\\repos\\Apple\\Domain\\Rules\\Rules.json";
+                if (!File.Exists(rulesFilePath))
+                {
+                    throw new FileNotFoundException("Rules JSON file not found.", rulesFilePath);
+                }
 
                 string rulesJson = File.ReadAllText(rulesFilePath);
-                Workflow workflow = JsonSerializer.Deserialize<Workflow>(rulesJson)!;
-                if (workflow.Rules == null || !workflow.Rules.Any())
-                    throw new InvalidOperationException("Deserialized workflow is null or empty.");
 
-                return new RulesEngine.RulesEngine(new[] { workflow }, null);
+                Workflow workflow = JsonSerializer.Deserialize<Workflow>(rulesJson);
+                if (workflow == null || workflow.Rules == null || !workflow.Rules.Any())
+                {
+                    throw new InvalidOperationException("Deserialized workflow is null or empty.");
+                }
+
+                string workflowJson = JsonSerializer.Serialize(workflow);
+                return new RulesEngine.RulesEngine(new[] { workflowJson }, null);
             });
         }
     }

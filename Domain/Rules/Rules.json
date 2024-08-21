@@ -1,241 +1,35 @@
 {
-  "countries": {
-    "unitary": {
-      "Jordan": {
-        "leaveTypes": {
-          "annualLeave": {
-            "LeaveTypeName": "annualLeave",
-            "entitlement": "yearsOfService < 5 ? '14 days per year' : '21 days per year'",
-            "accumulation": "Yes",
-            "carryOver": "Up to 2 years",
-            "expression": "monthsEmployed >= 3",
-            "noticePeriod": "1 month",
-            "documents": {
-              "required": false,
-              "requiredDocuments": []
-            }
-          },
-          "sickLeave": {
-            "LeaveTypeName": "sickLeave",
-            "entitlement": "14 days per year",
-            "accumulation": "Not applicable",
-            "carryOver": "Not applicable",
-            "expression": "true",
-            "noticePeriod": "None",
-            "documents": {
-              "required": true,
-              "requiredDocuments": [ "Medical certificate" ]
-            }
-          }
-        }
-      },
-      "Armenia": {
-        "leaveTypes": {
-          "annualLeave": {
-            "LeaveTypeName": "annualLeave",
-            "entitlement": "20 days per year",
-            "accumulation": "Yes",
-            "carryOver": "Up to 2 years",
-            "expression": "monthsEmployed >= 3",
-            "noticePeriod": "1 month",
-            "documents": {
-              "required": false,
-              "requiredDocuments": []
-            }
-          },
-          "sickLeave": {
-            "LeaveTypeName": "sickLeave",
-            "entitlement": "14 days per year (paid), up to 90 days (unpaid)",
-            "accumulation": "Not applicable",
-            "carryOver": "Not applicable",
-            "expression": "true",
-            "noticePeriod": "None",
-            "documents": {
-              "required": true,
-              "requiredDocuments": [ "Medical certificate" ]
-            }
-          }
-        }
-      },
-      "SaudiArabia": {
-        "leaveTypes": {
-          "annualLeave": {
-            "LeaveTypeName": "annualLeave",
-            "entitlement": "21 days per year",
-            "accumulation": "Yes",
-            "carryOver": "Up to 1 year",
-            "expression": "monthsEmployed >= 3",
-            "noticePeriod": "1 month",
-            "documents": {
-              "required": false,
-              "requiredDocuments": []
-            }
-          },
-          "sickLeave": {
-            "LeaveTypeName": "sickLeave",
-            "entitlement": "30 days per year (paid), additional 30 days (unpaid)",
-            "accumulation": "Not applicable",
-            "carryOver": "Not applicable",
-            "expression": "true",
-            "noticePeriod": "None",
-            "documents": {
-              "required": true,
-              "requiredDocuments": [ "Medical certificate" ]
-            }
-          }
-        }
-      },
-      "Kuwait": {
-        "leaveTypes": {
-          "annualLeave": {
-            "LeaveTypeName": "annualLeave",
-            "entitlement": "30 days per year",
-            "accumulation": "Yes",
-            "carryOver": "Up to 2 years",
-            "expression": "monthsEmployed >= 3",
-            "noticePeriod": "1 month",
-            "documents": {
-              "required": false,
-              "requiredDocuments": []
-            }
-          },
-          "sickLeave": {
-            "LeaveTypeName": "sickLeave",
-            "entitlement": "15 days per year (paid), up to 60 days (unpaid)",
-            "accumulation": "Not applicable",
-            "carryOver": "Not applicable",
-            "expression": "true",
-            "noticePeriod": "None",
-            "documents": {
-              "required": true,
-              "requiredDocuments": [ "Medical certificate" ]
-            }
-          }
-        }
-      }
+  "WorkflowName": "LeaveRequestWorkflow",
+  "Rules": [
+    {
+      "RuleName": "FatherhoodLeaveRule",
+      "Expression": "employee.HasNewBorn && employee.YearsOfService > 0 && employee.Gender == 0",
+      "SuccessEvent": "Fatherhood Leave Approved for 3 days",
+      "FailureEvent": "Fatherhood Leave Not Approved"
     },
-    "federal": {
-      "UnitedStates": {
-        "states": {
-          "California": {
-            "leaveTypes": {
-              "annualLeave": {
-                "LeaveTypeName": "annualLeave",
-                "entitlement": "15 days per year",
-                "accumulation": "Yes",
-                "carryOver": "Up to 1 year",
-                "expression": "monthsEmployed >= 3",
-                "noticePeriod": "1 month",
-                "documents": {
-                  "required": false,
-                  "requiredDocuments": []
-                }
-              },
-              "sickLeave": {
-                "LeaveTypeName": "sickLeave",
-                "entitlement": "9 days per year",
-                "accumulation": "Yes",
-                "carryOver": "Up to 1 year",
-                "expression": "true",
-                "noticePeriod": "None",
-                "documents": {
-                  "required": true,
-                  "requiredDocuments": [ "Medical certificate" ]
-                }
-              }
-            }
-          },
-          "Texas": {
-            "leaveTypes": {
-              "annualLeave": {
-                "LeaveTypeName": "annualLeave",
-                "entitlement": "15 days per year",
-                "accumulation": "Yes",
-                "carryOver": "Up to 1 year",
-                "expression": "monthsEmployed >= 3",
-                "noticePeriod": "1 month",
-                "documents": {
-                  "required": false,
-                  "requiredDocuments": []
-                }
-              },
-              "sickLeave": {
-                "LeaveTypeName": "sickLeave",
-                "entitlement": "Accrual-based system, with a standard practice of 8 days per year",
-                "accumulation": "Yes",
-                "carryOver": "Up to 1 year",
-                "expression": "true",
-                "noticePeriod": "None",
-                "documents": {
-                  "required": true,
-                  "requiredDocuments": [ "Medical certificate" ]
-                }
-              }
-            }
-          }
-        }
-      },
-      "UAE": {
-        "emirates": {
-          "Dubai": {
-            "leaveTypes": {
-              "annualLeave": {
-                "LeaveTypeName": "annualLeave",
-                "entitlement": "30 days per year",
-                "accumulation": "Yes",
-                "carryOver": "Up to 2 years",
-                "expression": "monthsEmployed >= 3",
-                "noticePeriod": "1 month",
-                "documents": {
-                  "required": false,
-                  "requiredDocuments": []
-                }
-              },
-              "sickLeave": {
-                "LeaveTypeName": "sickLeave",
-                "entitlement": "90 days per year (paid), additional 90 days (unpaid)",
-                "accumulation": "Not applicable",
-                "carryOver": "Not applicable",
-                "expression": "true",
-                "noticePeriod": "None",
-                "documents": {
-                  "required": true,
-                  "requiredDocuments": [ "Medical certificate" ]
-                }
-              }
-            }
-          },
-          "AbuDhabi": {
-            "leaveTypes": {
-              "annualLeave": {
-                "LeaveTypeName": "annualLeave",
-                "entitlement": "30 days per year",
-                "accumulation": "Yes",
-                "carryOver": "Up to 2 years",
-                "expression": "monthsEmployed >= 3",
-                "noticePeriod": "1 month",
-                "documents": {
-                  "required": false,
-                  "requiredDocuments": []
-                }
-              },
-              "sickLeave": {
-                "LeaveTypeName": "sickLeave",
-                "entitlement": "90 days per year (paid), additional 90 days (unpaid)",
-                "accumulation": "Not applicable",
-                "carryOver": "Not applicable",
-                "expression": "true",
-                "noticePeriod": "None",
-                "documents": {
-                  "required": true,
-                  "requiredDocuments": [ "Medical certificate" ]
-                }
-              }
-            }
-          }
-        }
-      }
+    {
+      "RuleName": "AnnualLeaveRuleLessThan5",
+      "Expression": "employee.YearsOfService > 0 && employee.YearsOfService < 5",
+      "SuccessEvent": "Annual Leave Approved for 14 Days",
+      "FailureEvent": "Annual Leave Not Approved"
+    },
+    {
+      "RuleName": "AnnualLeaveRuleMoreThan5",
+      "Expression": "employee.YearsOfService >= 5",
+      "SuccessEvent": "Annual Leave Approved for 21 Days",
+      "FailureEvent": "Annual Leave Not Approved"
+    },
+    {
+      "RuleName": "SickLeaveRule",
+      "Expression": "employee.YearsOfService > 0",
+      "SuccessEvent": "Sick Leave Approved for 1 Day",
+      "FailureEvent": "Sick Leave Not Approved"
+    },
+    {
+      "RuleName": "MaternityLeaveRule",
+      "Expression": "employee.Gender == 1 && employee.HasNewBorn",
+      "SuccessEvent": "Maternity Leave Approved for 2 Months",
+      "FailureEvent": "Maternity Leave Not Approved"
     }
-  },
-  "workflowName": "LeaveRequestWorkflow"
+  ]
 }
