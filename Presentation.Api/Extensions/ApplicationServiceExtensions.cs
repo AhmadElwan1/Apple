@@ -1,9 +1,12 @@
 ﻿using System.Reflection;
+using Domain.DTOs.Country;
+using Domain.DTOs.LeaveType;
+using Domain.DTOs.Tenant;
 using Domain.Validators.CountryValidators;
 using Domain.Validators.EmployeeValidators;
-using Domain.Validators.LeaveRuleValidators;
 using Domain.Validators.TenantValidators;
 using Domain.Validators.UnitValidators;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure.Dependencies;
 using Microsoft.OpenApi.Models;
@@ -18,6 +21,9 @@ public static class ApplicationServiceExtensions
     {
         services.AddInfrastructureServices(config);
 
+        services.AddScoped<IValidator<CreateCountryDto>, CreateCountryDtoValidator>();
+        services.AddScoped<IValidator<CreateTenantDto>, CreateTenantDtoValidator>();
+        services.AddScoped<IValidator<UpdateTenantDto>, UpdateTenantDtoValidator>();
         services.AddControllers()
             .AddFluentValidation(fv =>
             {
@@ -26,8 +32,8 @@ public static class ApplicationServiceExtensions
                 fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(UpdateTenantDtoValidator)));
                 fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateUnitDtoValidator)));
                 fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(UpdateUnitDtoValidator)));
-                fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(LeaveTypeDtoValidator)));
                 fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateCountryDtoValidator)));
+
             });
 
         services.AddEndpointsApiExplorer();

@@ -3,6 +3,7 @@ using System;
 using Infrastructure.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,72 +12,18 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(LeaveDbContext))]
-    partial class LeaveDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240819085535_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Domain.Aggregates.LeaveType", b =>
-                {
-                    b.Property<int>("LeaveTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LeaveTypeId"));
-
-                    b.Property<string>("Accural")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("CarryOver")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int>("CountryId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("DocumentRequired")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Entilement")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Expression")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<string>("LeaveTypeName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("NoticePeriod")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int?>("TenantId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("LeaveTypeId");
-
-                    b.HasIndex("CountryId");
-
-                    b.HasIndex("TenantId");
-
-                    b.ToTable("LeaveTypes");
-                });
 
             modelBuilder.Entity("Domain.Entities.Country", b =>
                 {
@@ -92,8 +39,7 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -117,15 +63,12 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("HasNewBorn")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("MaritalStatus")
-                        .HasColumnType("integer");
+                    b.Property<bool>("IsMarried")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("Religion")
-                        .HasColumnType("integer");
 
                     b.Property<int>("UnitId")
                         .HasColumnType("integer");
@@ -169,6 +112,45 @@ namespace Infrastructure.Migrations
                     b.ToTable("LeaveRequests");
                 });
 
+            modelBuilder.Entity("Domain.Entities.LeaveRule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Expression")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FailureEvent")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RuleName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SuccessEvent")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("LeaveRules");
+                });
+
             modelBuilder.Entity("Domain.Entities.Tenant", b =>
                 {
                     b.Property<int>("Id")
@@ -208,37 +190,23 @@ namespace Infrastructure.Migrations
                     b.ToTable("Units");
                 });
 
-            modelBuilder.Entity("Domain.Aggregates.LeaveType", b =>
-                {
-                    b.HasOne("Domain.Entities.Country", "Country")
-                        .WithMany("LeaveTypes")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Tenant", "Tenant")
-                        .WithMany("LeaveTypes")
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Country");
-
-                    b.Navigation("Tenant");
-                });
-
             modelBuilder.Entity("Domain.Entities.Employee", b =>
                 {
-                    b.HasOne("Domain.Entities.Country", null)
+                    b.HasOne("Domain.Entities.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Unit", null)
-                        .WithMany()
+                    b.HasOne("Domain.Entities.Unit", "Unit")
+                        .WithMany("Employees")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Country");
+
+                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("Domain.Entities.LeaveRequest", b =>
@@ -252,18 +220,37 @@ namespace Infrastructure.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("Domain.Entities.LeaveRule", b =>
+                {
+                    b.HasOne("Domain.Entities.Country", "Country")
+                        .WithMany("LeaveRules")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Tenant", "Tenant")
+                        .WithMany("LeaveRules")
+                        .HasForeignKey("TenantId");
+
+                    b.Navigation("Country");
+
+                    b.Navigation("Tenant");
+                });
+
             modelBuilder.Entity("Domain.Entities.Unit", b =>
                 {
-                    b.HasOne("Domain.Entities.Tenant", null)
-                        .WithMany()
+                    b.HasOne("Domain.Entities.Tenant", "Tenant")
+                        .WithMany("Units")
                         .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("Domain.Entities.Country", b =>
                 {
-                    b.Navigation("LeaveTypes");
+                    b.Navigation("LeaveRules");
                 });
 
             modelBuilder.Entity("Domain.Entities.Employee", b =>
@@ -273,7 +260,14 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Tenant", b =>
                 {
-                    b.Navigation("LeaveTypes");
+                    b.Navigation("LeaveRules");
+
+                    b.Navigation("Units");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Unit", b =>
+                {
+                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }

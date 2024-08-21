@@ -60,14 +60,8 @@ namespace Presentation.Routes
                 return Results.NotFound("Tenant not found.");
             }).WithTags("Tenants");
 
-            endpoints.MapPost("/tenants/{tenantId}/leave-types", async (int tenantId, [FromBody] LeaveTypeDto leaveTypeDto, ILeaveTypeRepository leaveTypeRepository, IValidator<LeaveTypeDto> validator) =>
+            endpoints.MapPost("/tenants/{tenantId}/leave-types", async (int tenantId, [FromBody] LeaveTypeDto leaveTypeDto, ILeaveTypeRepository leaveTypeRepository) =>
             {
-                ValidationResult validationResult = await validator.ValidateAsync(leaveTypeDto);
-                if (!validationResult.IsValid)
-                {
-                    return Results.BadRequest(validationResult.Errors);
-                }
-
                 LeaveType leaveType = await leaveTypeRepository.AddLeaveTypeAsync(tenantId, leaveTypeDto);
 
                 return Results.Created($"/tenants/{tenantId}/leave-types/{leaveType.LeaveTypeId}", leaveType);
@@ -91,6 +85,12 @@ namespace Presentation.Routes
                     return Results.NoContent();
                 }
                 return Results.NotFound("Tenant not found.");
+            }).WithTags("Tenants");
+
+            endpoints.MapGet("/tenants", async (ITenantRepository tenantRepository) =>
+            {
+                IEnumerable<Tenant> tenants = await tenantRepository.GetAllTenantsAsync();
+                return Results.Ok(tenants);
             }).WithTags("Tenants");
         }
     }

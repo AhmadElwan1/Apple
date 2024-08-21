@@ -135,7 +135,9 @@ The repository is organized into the following main folders:
     }
     ```
 
-### **Validators**
+### **
+
+s**
 Represents the rules for input validation.
 ```csharp
 public class CreateEmployeeDtoValidator : AbstractValidator<CreateEmployeeDto>
