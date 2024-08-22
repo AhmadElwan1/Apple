@@ -41,21 +41,16 @@ namespace Presentation.Routes
                     return Results.NotFound("Employee not found.");
                 }
 
-                string countryName = await leaveRequestService.GetCountryNameByIdAsync(employee.CountryId);
-                if (string.IsNullOrEmpty(countryName))
-                {
-                    return Results.BadRequest("Country information could not be determined.");
-                }
+                string resultMessage = await leaveRequestService.ApproveLeaveRequestAsync(leaveRequestDto.EmployeeId, leaveRequestDto.LeaveTypeName);
 
-                string resultMessage = await leaveRequestService.CreateLeaveRequestAsync(leaveRequestDto.EmployeeId, leaveRequestDto.LeaveTypeName);
-
-                if (resultMessage.Contains("not found"))
+                if (resultMessage.Contains("not found") || resultMessage.Contains("not approved"))
                 {
                     return Results.NotFound(resultMessage);
                 }
 
                 return Results.Created($"/leave-requests/{leaveRequestDto.EmployeeId}", new { message = resultMessage });
             }).WithTags("LeaveRequests");
+
 
 
             endpoints.MapPut("/leave-requests/{id}", async (int id, LeaveRequest leaveRequest, ILeaveRequestRepository leaveRequestRepository) =>
@@ -88,6 +83,17 @@ namespace Presentation.Routes
                 await leaveRequestRepository.SaveChangesAsync();
                 return Results.NoContent();
             }).WithTags("LeaveRequests");
+
+            endpoints.MapGet("/leave-requests/employee/{employeeId}", async (int employeeId, ILeaveRequestRepository leaveRequestRepository) =>
+           {
+               IEnumerable<LeaveRequest> leaveRequests = await leaveRequestRepository.GetLeaveRequestsByEmployeeIdAsync(employeeId);
+               if (!leaveRequests.Any())
+               {
+                   return Results.NotFound("No leave requests found for this employee.");
+               }
+
+               return Results.Ok(leaveRequests);
+           }).WithTags("LeaveRequests");
         }
     }
 }

@@ -2,7 +2,7 @@ using Presentation.Api.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddApplicatinoServices(builder.Configuration);
+builder.Services.AddApplicationServices(builder.Configuration);
 
 WebApplication app = builder.Build();
 

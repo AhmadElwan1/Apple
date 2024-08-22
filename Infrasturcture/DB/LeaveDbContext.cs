@@ -11,7 +11,6 @@ namespace Infrastructure.DB
             : base(options)
         {
         }
-
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<Unit> Units { get; set; }
         public DbSet<Employee> Employees { get; set;}
@@ -29,7 +28,6 @@ namespace Infrastructure.DB
             modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
             modelBuilder.ApplyConfiguration(new UnitConfiguration());
             modelBuilder.ApplyConfiguration(new LeaveRequestConfiguration());
-
         }
     }
 }
