@@ -9,8 +9,8 @@ public class LeaveRequestConfiguration : IEntityTypeConfiguration<LeaveRequest>
     public void Configure(EntityTypeBuilder<LeaveRequest> builder)
     {
         builder
-            .HasOne(lr => lr.Employee)
-            .WithMany(e => e.LeaveRequests)
+            .HasOne<Employee>()
+            .WithMany()
             .HasForeignKey(lr => lr.EmployeeId)
             .OnDelete(DeleteBehavior.Cascade);
     }

@@ -50,9 +50,12 @@ namespace Infrastructure.Repositories
         {
             return await _dbContext.LeaveRequests.ToListAsync();
         }
-        public async Task<Employee?> GetEmployeeByIdAsync(int employeeId)
+
+        public async Task<IEnumerable<LeaveRequest>> GetLeaveRequestsByEmployeeIdAsync(int employeeId)
         {
-            return await _dbContext.Employees.FindAsync(employeeId);
+            return await _dbContext.LeaveRequests
+                .Where(lr => lr.EmployeeId == employeeId)
+                .ToListAsync();
         }
     }
 }

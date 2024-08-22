@@ -153,6 +153,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("EmployeeId1")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -169,6 +172,8 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
+
+                    b.HasIndex("EmployeeId1");
 
                     b.ToTable("LeaveRequests");
                 });
@@ -247,13 +252,15 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.LeaveRequest", b =>
                 {
-                    b.HasOne("Domain.Entities.Employee", "Employee")
-                        .WithMany("LeaveRequests")
+                    b.HasOne("Domain.Entities.Employee", null)
+                        .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Employee");
+                    b.HasOne("Domain.Entities.Employee", null)
+                        .WithMany("LeaveRequests")
+                        .HasForeignKey("EmployeeId1");
                 });
 
             modelBuilder.Entity("Domain.Entities.Unit", b =>

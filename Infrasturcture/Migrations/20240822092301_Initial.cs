@@ -134,7 +134,8 @@ namespace Infrastructure.Migrations
                     StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     IsApproved = table.Column<bool>(type: "boolean", nullable: false),
-                    LeaveTypeName = table.Column<string>(type: "text", nullable: false)
+                    LeaveTypeName = table.Column<string>(type: "text", nullable: false),
+                    EmployeeId1 = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -145,6 +146,11 @@ namespace Infrastructure.Migrations
                         principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LeaveRequests_Employees_EmployeeId1",
+                        column: x => x.EmployeeId1,
+                        principalTable: "Employees",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -161,6 +167,11 @@ namespace Infrastructure.Migrations
                 name: "IX_LeaveRequests_EmployeeId",
                 table: "LeaveRequests",
                 column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LeaveRequests_EmployeeId1",
+                table: "LeaveRequests",
+                column: "EmployeeId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LeaveTypes_CountryId",
