@@ -1,5 +1,4 @@
 ﻿using Domain.Abstractions;
-using Domain.Aggregates;
 using Domain.DTOs.LeaveType;
 using Domain.Entities;
 using Infrastructure.DB;

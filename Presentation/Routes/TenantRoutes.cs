@@ -1,5 +1,4 @@
 ﻿using Domain.Abstractions;
-using Domain.Aggregates;
 using Domain.DTOs.Tenant;
 using FluentValidation;
 using FluentValidation.Results;
@@ -64,7 +63,7 @@ namespace Presentation.Routes
             {
                 LeaveType leaveType = await leaveTypeRepository.AddLeaveTypeAsync(tenantId, leaveTypeDto);
 
-                return Results.Created($"/tenants/{tenantId}/leave-types/{leaveType.LeaveTypeId}", leaveType);
+                return Results.Created($"/tenants/{tenantId}/leave-types/{leaveType.Id}", leaveType);
             }).WithTags("Tenants");
 
             endpoints.MapDelete("/rules/{ruleId}", async (ITenantRepository tenantRepository, int ruleId) =>

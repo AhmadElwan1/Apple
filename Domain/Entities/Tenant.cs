@@ -1,6 +1,4 @@
-﻿using Domain.Aggregates;
-
-namespace Domain.Entities
+﻿namespace Domain.Entities
 {
     public class Tenant
     {

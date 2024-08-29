@@ -1,5 +1,4 @@
-﻿using Domain.Aggregates;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Infrastructure.Configuration;
 using Microsoft.EntityFrameworkCore;
 

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
-using Domain.Aggregates;
 using Domain.DTOs.LeaveType;
 
 namespace Presentation.Routes
@@ -30,7 +29,7 @@ namespace Presentation.Routes
             endpoints.MapPost("/countries/{countryId}/leave-types", async (int countryId, LeaveTypeDto leaveTypeDto, ICountryRepository countryRepository) =>
             {
                 LeaveType leaveType = await countryRepository.AddLeaveTypeAsync(countryId, leaveTypeDto);
-                return Results.Created($"/countries/{countryId}/leave-types/{leaveType.LeaveTypeId}", leaveType);
+                return Results.Created($"/countries/{countryId}/leave-types/{leaveType.Id}", leaveType);
             }).WithTags("Country");
 
             endpoints.MapPatch("/countries/{id}/activate", async (int id, ICountryRepository countryRepository) =>

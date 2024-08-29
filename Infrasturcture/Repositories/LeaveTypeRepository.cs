@@ -1,5 +1,4 @@
-﻿using Domain.Aggregates;
-using Domain.Abstractions;
+﻿using Domain.Abstractions;
 using Domain.DTOs.LeaveType;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.DB;
@@ -38,12 +37,12 @@ namespace Infrastructure.Repositories
 
         public async Task<LeaveType?> GetLeaveTypeByIdAsync(int leaveTypeId)
         {
-            return await _dbContext.LeaveTypes.FirstOrDefaultAsync(l => l.LeaveTypeId == leaveTypeId);
+            return await _dbContext.LeaveTypes.FirstOrDefaultAsync(l => l.Id == leaveTypeId);
         }
 
         public async Task<LeaveType?> UpdateLeaveTypeAsync(int leaveTypeId, LeaveTypeDto leaveTypeDto)
         {
-            LeaveType? leaveType = await _dbContext.LeaveTypes.FirstOrDefaultAsync(l => l.LeaveTypeId == leaveTypeId);
+            LeaveType? leaveType = await _dbContext.LeaveTypes.FirstOrDefaultAsync(l => l.Id == leaveTypeId);
 
             if (leaveType == null)
                 return null;

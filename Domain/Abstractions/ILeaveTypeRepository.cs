@@ -1,5 +1,4 @@
-﻿using Domain.Aggregates;
-using Domain.DTOs.LeaveType;
+﻿using Domain.DTOs.LeaveType;
 
 namespace Domain.Abstractions
 {
